@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <meta name="description" content="Colombia Trucks — Plataforma interactiva sobre los grandes tractocamiones en Colombia: Kenworth T800, International Eagle 9400i, Kenworth W900 y Kenworth T680. Simulador de tablero, sonidos reales de motor diésel, rutas de montaña y comparador técnico.">
+  <meta name="keywords" content="Camiones colombianos, tractocamiones, Kenworth T800, International Eagle 9400i, Kenworth W900, Kenworth T680, Cummins X15, Eaton Fuller, La Línea, Alto de Minas, transporte de carga Colombia, Jake Brake, sonido diésel">
+  <meta name="theme-color" content="#080c10">
+  <title>Colombia Trucks · Potencia, carretera y leyenda sobre ruedas</title>
+
+  <!-- Google Fonts: Barlow Condensed (Títulos pesados), Outfit (Acentos), Inter (Texto) y JetBrains Mono (Digital) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&family=Outfit:wght@700;800;900&display=swap" rel="stylesheet">
+
+  <link href="css/responsive.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+
+<!-- ============ NAVEGACIÓN PRINCIPAL ============ -->
+<header class="site-header" id="inicio">
+  <nav class="nav container" aria-label="Navegación principal">
+    <a class="nav-brand" href="#inicio">
+      <span class="nav-flag-badge">🇨🇴</span> COLOMBIA<span>TRUCKS</span>
+    </a>
+
+    <button class="nav-toggle" id="navToggle" aria-label="Abrir menú de navegación" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#camiones">Camiones</a></li>
+      <li><a href="#tablero">Tablero & Cabina</a></li>
+      <li><a href="#historia">Historia</a></li>
+      <li><a href="#rutas">Rutas</a></li>
+      <li><a href="#multimedia">Sonidos & Videos</a></li>
+      <li><a href="#comparador">Comparador</a></li>
+      <li><a href="#juego">Juego</a></li>
+    </ul>
+  </nav>
+</header>
+
+<!-- ============ HERO CINEMATOGRÁFICO CON CANVAS ============ -->
+<section class="hero">
+  <canvas id="heroCanvas" aria-hidden="true"></canvas>
+  <div class="hero-overlay" aria-hidden="true"></div>
+
+  <div class="hero-content container">
+    <p class="eyebrow reveal">🇨🇴 Cultura Camionera · Transporte Pesado</p>
+    <h1 class="hero-title reveal">
+      CAMIONES QUE MUEVEN <span>COLOMBIA</span>
+    </h1>
+    <p class="hero-sub reveal">
+      Potencia americana, carretera colombiana y máquinas forjadas para dominar las cordilleras más exigentes del país.
+    </p>
+    <div class="hero-actions reveal">
+      <a class="btn btn-primary" href="#camiones">🔥 Explorar Camiones</a>
+      <a class="btn btn-ghost" href="#comparador">⚙️ Comparar Modelos</a>
+      <a class="btn btn-secondary" href="#historia">🛣️ Conocer la Historia</a>
+    </div>
+
+    <!-- HUD de Estadísticas -->
+    <div class="hero-stats reveal">
+      <div class="stat-card">
+        <span class="stat-num" data-count="605" data-suffix="+ HP">0</span>
+        <span class="stat-label">Potencia Máxima</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-num" data-count="18" data-suffix=" VEL">0</span>
+        <span class="stat-label">Caja Fuller</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-num" data-count="52" data-suffix=" TON">0</span>
+        <span class="stat-label">PBV Legal (C3-S3)</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-num" data-count="100" data-suffix="%">0</span>
+        <span class="stat-label">Leyenda en Ruta</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<main>
+
+  <!-- ============ SECCIÓN: LOS GIGANTES DE LA CARRETERA (CATÁLOGO) ============ -->
+  <section class="section" id="camiones">
+    <div class="container">
+      <div class="section-header">
+        <p class="eyebrow reveal">Catálogo Oficial</p>
+        <h2 class="reveal">Los Gigantes de la Carretera</h2>
+        <p class="section-intro reveal">
+          Explora los 4 tractocamiones más icónicos que cruzan los Andes y conectan los puertos de Colombia. Filtra por marca, estilo o busca por modelo.
+        </p>
+      </div>
+
+      <!-- Barra de Filtros & Búsqueda -->
+      <div class="catalog-controls reveal">
+        <div class="filter-group">
+          <button class="filter-btn active" data-filter="all">Todos los Modelos</button>
+          <button class="filter-btn" data-filter="kenworth">Kenworth</button>
+          <button class="filter-btn" data-filter="international">International</button>
+          <button class="filter-btn" data-filter="clasico">Clásicos</button>
+          <button class="filter-btn" data-filter="moderno">Modernos</button>
+          <button class="filter-btn" data-filter="favoritos">❤️ Mis Favoritos</button>
+        </div>
+
+        <div class="search-box">
+          <span class="search-icon" aria-hidden="true">🔍</span>
+          <input type="text" id="truckSearchInput" placeholder="Buscar por motor, modelo..." aria-label="Buscar camión">
+        </div>
+      </div>
+
+      <!-- Contador de Resultados -->
+      <div class="catalog-count-bar reveal">
+        <span id="filterCount">4 modelos encontrados</span>
+      </div>
+
+      <!-- Grilla de Tarjetas Interactivas -->
+      <div class="grid cards-grid" id="trucksGrid"></div>
+    </div>
+  </section>
+
+  <!-- ============ SECCIÓN: POR DENTRO (CABINA & TABLERO INTERACTIVO) ============ -->
+  <section class="section section-alt" id="tablero">
+    <div class="container">
+      <div class="section-header">
+        <p class="eyebrow reveal">Puesto de Mando & Simulación</p>
+        <h2 class="reveal">Por Dentro: El Clúster de Instrumentos</h2>
+        <p class="section-intro reveal">
+          Siéntate al volante de un tractocamión de 52 toneladas. Enciende el motor, acelera para presurizar el turbo y siente el poder de los frenos de compresión en vivo.
+        </p>
+      </div>
+
+      <!-- Simulador de Tablero -->
+      <div class="dashboard-simulator reveal">
+        <div class="dash-cluster-header">
+          <div class="dash-logo-title">🎛️ INSTRUMENT CLUSTER · HEAVY DUTY</div>
+          <div class="dash-warning-leds">
+            <span class="dash-led led-engine" id="ledCheckEngine">CHECK ENGINE</span>
+            <span class="dash-led led-jake" id="ledJake">JAKE BRAKE</span>
+            <span class="dash-led led-air" id="ledAirLow">LOW AIR</span>
+            <span class="dash-led led-diff" id="ledDiffLock">DIFF LOCK</span>
+          </div>
+        </div>
+
+        <div class="dash-gauges-row">
+          <!-- 1. Tacómetro (RPM) -->
+          <div class="gauge-card">
+            <div class="gauge-bezel large">
+              <div class="gauge-dial-face">
+                <div class="gauge-eco-zone">ECO 12-15</div>
+                <div class="gauge-needle" id="needleRpm"></div>
+                <div class="gauge-center-cap"></div>
+              </div>
+            </div>
+            <div class="gauge-info">
+              <span class="gauge-title">Tacómetro (RPM)</span>
+              <div class="gauge-digital-val"><span id="rpmDigital">0</span> RPM</div>
+            </div>
+          </div>
+
+          <!-- 2. Velocímetro -->
+          <div class="gauge-card">
+            <div class="gauge-bezel large">
+              <div class="gauge-dial-face">
+                <div class="gauge-needle" id="needleSpeed"></div>
+                <div class="gauge-center-cap"></div>
+              </div>
+            </div>
+            <div class="gauge-info">
+              <span class="gauge-title">Velocímetro</span>
+              <div class="gauge-digital-val"><span id="speedDigital">0</span> km/h (<span id="gearDigital">N</span>)</div>
+            </div>
+          </div>
+
+          <!-- 3. Presión Turbo Boost -->
+          <div class="gauge-card">
+            <div class="gauge-bezel">
+              <div class="gauge-dial-face">
+                <div class="gauge-needle" id="needleTurbo"></div>
+                <div class="gauge-center-cap"></div>
+              </div>
+            </div>
+            <div class="gauge-info">
+              <span class="gauge-title">Turbo Boost</span>
+              <div class="gauge-digital-val"><span id="turboDigital">0</span> PSI</div>
+            </div>
+          </div>
+
+          <!-- 4. Presión de Aire Neumático -->
+          <div class="gauge-card">
+            <div class="gauge-bezel">
+              <div class="gauge-dial-face">
+                <div class="gauge-needle" id="needleAir1"></div>
+                <div class="gauge-needle" id="needleAir2" style="background: #38bdf8;"></div>
+                <div class="gauge-center-cap"></div>
+              </div>
+            </div>
+            <div class="gauge-info">
+              <span class="gauge-title">Aire Prim / Sec</span>
+              <div class="gauge-digital-val">120 / 118 PSI</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Barra de Botones del Simulador -->
+        <div class="dash-controls-bar">
+          <button class="dash-btn btn-ignition" id="dashIgnition">
+            <span>⚡</span> ARRANCAR MOTOR
+          </button>
+          <button class="dash-btn btn-throttle" id="dashThrottle" title="Mantén presionado para acelerar con el rugido real de YouTube">
+            <span>🚀</span> ACELERAR (AUDIO YOUTUBE)
+          </button>
+          <button class="dash-btn btn-jake" id="dashJake">
+            <span>🛑</span> JAKE BRAKE
+          </button>
+          <button class="dash-btn btn-horn" id="dashHorn">
+            <span>📢</span> CORNETA
+          </button>
+
+          <!-- Reproductor de Audio Real de YouTube (Oculto) -->
+          <iframe
+            id="dashThrottleAudioFrame"
+            src="https://www.youtube-nocookie.com/embed/sHmaSbjKC0E?enablejsapi=1&autoplay=0&loop=1&playlist=sHmaSbjKC0E"
+            allow="autoplay; encrypted-media"
+            style="position: absolute; width: 1px; height: 1px; opacity: 0.01; pointer-events: none; border: 0;"
+            tabindex="-1"
+            title="Audio Acelerador YouTube"></iframe>
+        </div>
+
+        <div class="dash-audio-source-badge">
+          <span>🔊 Sonido Real de Aceleración sincronizado con:</span>
+          <a href="https://www.youtube.com/shorts/sHmaSbjKC0E" target="_blank" rel="noopener noreferrer">
+            YouTube Shorts — Rugido Cummins Turbo Spool ↗
+          </a>
+        </div>
+      </div>
+
+      <!-- Tarjetas de Ergonomía y Cabina -->
+      <div class="cabin-features-grid reveal">
+        <div class="cabin-card">
+          <div class="cabin-card-icon">💺</div>
+          <h4>Asientos Neumáticos</h4>
+          <p>Suspensión de aire independiente con amortiguación adaptable a las irregularidades del pavimento y soporte lumbar doble.</p>
+        </div>
+        <div class="cabin-card">
+          <div class="cabin-card-icon">🛏️</div>
+          <h4>Dormitorio Modular</h4>
+          <p>Literas de hasta 86 pulgadas con aislamiento térmico para los páramos fríos y climatización auxiliar independiente.</p>
+        </div>
+        <div class="cabin-card">
+          <div class="cabin-card-icon">📻</div>
+          <h4>Consola Envolvente</h4>
+          <p>Distribución en herradura orientada al conductor con acceso inmediato a la válvula de freno de parqueo y radio CB de carretera.</p>
+        </div>
+        <div class="cabin-card">
+          <div class="cabin-card-icon">🎧</div>
+          <h4>Aislamiento Acústico</h4>
+          <p>Cabinas selladas herméticamente para reducir el ruido exterior a menos de 68 dB en velocidad de crucero.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SECCIÓN: HISTORIA DE LOS GRANDES CAMIONES ============ -->
+  <section class="section" id="historia">
+    <div class="container">
+      <div class="section-header">
+        <p class="eyebrow reveal">Evolución & Leyenda</p>
+        <h2 class="reveal">Historia de los Grandes Camiones</h2>
+        <p class="section-intro reveal">
+          Un recorrido cronológico por los hitos que transformaron el transporte pesado y la conquista de las carreteras colombianas.
+        </p>
+      </div>
+
+      <ol class="timeline">
+        <li class="timeline-item reveal">
+          <span class="timeline-year">1923</span>
+          <h3>Fundación de Kenworth Motor Truck Company</h3>
+          <p>Nace en Seattle la marca que definiría el estándar de chasis pesado y durabilidad para el transporte americano.</p>
+        </li>
+        <li class="timeline-item reveal">
+          <span class="timeline-year">1950s</span>
+          <h3>Llegada de las Primeras Tractomulas a Colombia</h3>
+          <p>Los primeros camiones pesados comienzan a desafiar las trochas de herradura y los pasos de cordillera en el país.</p>
+        </li>
+        <li class="timeline-item reveal">
+          <span class="timeline-year">1961</span>
+          <h3>Nace el Legendario Kenworth W900</h3>
+          <p>Se presenta el ícono del diseño convencional con trompa larga, convirtiéndose en el símbolo indiscutible del camionero clásico.</p>
+        </li>
+        <li class="timeline-item reveal">
+          <span class="timeline-year">1986</span>
+          <h3>Lanzamiento del Kenworth T800</h3>
+          <p>Kenworth revoluciona el mercado con el capó inclinado a 45 grados, creando la máquina más maniobrable y resistente para montañas.</p>
+        </li>
+        <li class="timeline-item reveal">
+          <span class="timeline-year">1990s</span>
+          <h3>El International Eagle 9400i Conquista las Rutas</h3>
+          <p>Navistar establece un nuevo estándar de confort con su cabina Pro-Sleeper y tablero de nogal, dominando el transporte de larga distancia en Colombia.</p>
+        </li>
+        <li class="timeline-item reveal">
+          <span class="timeline-year">2000s</span>
+          <h3>Era Electrónica: Cummins ISX & Freno Jake Brake</h3>
+          <p>La inyección electrónica Common Rail y los frenos de descompresión por motor transforman la seguridad en los descensos de cordillera.</p>
+        </li>
+        <li class="timeline-item reveal">
+          <span class="timeline-year">2013</span>
+          <h3>Revolución Aerodinámica con el Kenworth T680</h3>
+          <p>Diseño en túnel de viento para reducir la resistencia al avance, logrando hasta un 10% de ahorro de combustible e integrando pantallas digitales.</p>
+        </li>
+        <li class="timeline-item reveal">
+          <span class="timeline-year">Presente</span>
+          <h3>Telemetría Inteligente & Motores Euro VI</h3>
+          <p>Los tractocamiones modernos combinan transmisiones automatizadas predictivas por GPS, sensores anticolisión y máxima reducción de emisiones sin sacrificar torque.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ============ SECCIÓN: RUTAS DE COLOMBIA ============ -->
+  <section class="section section-alt" id="rutas">
+    <div class="container">
+      <div class="section-header">
+        <p class="eyebrow reveal">Topografía & Desafíos Viales</p>
+        <h2 class="reveal">Rutas de Carga en Colombia</h2>
+        <p class="section-intro reveal">
+          Los pasos de montaña más respetados por los transportadores colombianos: altitudes de más de 3,200 msnm, pendientes pronunciadas y curvas en horquilla.
+        </p>
+      </div>
+
+      <div class="routes-grid reveal">
+        <!-- Lista de Rutas -->
+        <div class="routes-nav-box" id="routesNavList"></div>
+
+        <!-- Tarjeta de Detalles de Ruta Activa -->
+        <div class="route-details-card" id="routeActiveDetails"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SECCIÓN: VIDEOS DE TRACTOMULAS EN CARRETERA ============ -->
+  <section class="section" id="multimedia">
+    <div class="container">
+      <div class="section-header">
+        <p class="eyebrow reveal">Videos en Carretera & Potencia Real</p>
+        <h2 class="reveal">Tractocamiones en Acción</h2>
+        <p class="section-intro reveal">
+          Mira a los gigantes del transporte de carga pesada recorriendo las cordilleras más desafiantes de Colombia: subidas extremas, curvas en horquilla y toda la potencia de las tractomulas colombianas.
+        </p>
+      </div>
+
+      <!-- Centro de Video de Tractocamiones Reales -->
+      <div class="multimedia-video-box reveal" style="max-width: 960px; margin-inline: auto;">
+        <div class="video-tabs-bar">
+          <button class="video-tab-btn active" data-truckid="t800" data-videoid="LRoLOA4wJtA" data-yturl="https://www.youtube.com/watch?v=LRoLOA4wJtA" data-title="🟡 Kenworth T800 — El Rey de la Montaña" data-desc="Recorrido real por las cordilleras colombianas con capó inclinado a 45°, motor Cummins X15 de 600 HP y caja Fuller de 18 velocidades." aria-label="Ver video de Kenworth T800">
+            🟡 Kenworth T800
+          </button>
+          <button class="video-tab-btn" data-truckid="international-9400i" data-videoid="NEMLdPHc1Uw" data-yturl="https://www.youtube.com/watch?v=NEMLdPHc1Uw" data-title="🟤 International Eagle 9400i — El Águila" data-desc="Elegancia clásica, cabina espaciosa Pro-Sleeper, tablero de nogal y tradición de transporte pesado en Colombia." aria-label="Ver video de International Eagle 9400i">
+            🟤 Eagle 9400i
+          </button>
+          <button class="video-tab-btn" data-truckid="w900" data-videoid="zYr7IGq_57g" data-yturl="https://www.youtube.com/watch?v=zYr7IGq_57g" data-title="⚪ Kenworth W900 — El Ícono Clásico" data-desc="Trompa cuadrada extendida de 130 pulgadas BBC, filtros exteriores cromados, chimeneas gigantes de escape vertical y rugido de cromo." aria-label="Ver video de Kenworth W900">
+            ⚪ Kenworth W900
+          </button>
+          <button class="video-tab-btn" data-truckid="t680" data-videoid="x70mVvo12VU" data-yturl="https://www.youtube.com/watch?v=x70mVvo12VU" data-title="🔴 Kenworth T680 — Vanguardia Aerodinámica" data-desc="Ingeniería de vanguardia, cabina digital de 15 pulgadas, radar de seguridad y máxima eficiencia diésel en carretera colombiana." aria-label="Ver video de Kenworth T680">
+            🔴 Kenworth T680
+          </button>
+        </div>
+
+        <!-- Visor de Video YouTube HD -->
+        <div class="video-frame-box" id="videoFrameContainer">
+          <iframe
+            id="truckVideoPlayer"
+            src="https://www.youtube-nocookie.com/embed/LRoLOA4wJtA?rel=0&modestbranding=1"
+            title="Tractomulas Colombianas en Carretera"
+            loading="lazy"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen></iframe>
+        </div>
+
+        <!-- Pie de Información del Camión Activo -->
+        <div class="video-caption-card" id="videoCaptionCard">
+          <div class="video-caption-header">
+            <h4 id="videoCaptionTitle">🟡 Kenworth T800 — El Rey de la Montaña</h4>
+            <a href="https://www.youtube.com/watch?v=LRoLOA4wJtA" target="_blank" rel="noopener noreferrer" class="btn-yt-link" id="videoExternalLink">
+              ▶ Abrir Video en YouTube ↗
+            </a>
+          </div>
+          <p id="videoCaptionDesc">Recorrido real por las cordilleras colombianas con capó inclinado a 45°, motor Cummins X15 de 600 HP y caja Fuller de 18 velocidades.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SECCIÓN: COMPARADOR DE CAMIONES ============ -->
+  <section class="section section-alt" id="comparador">
+    <div class="container">
+      <div class="section-header">
+        <p class="eyebrow reveal">Análisis Cara a Cara</p>
+        <h2 class="reveal">Compara los Gigantes</h2>
+        <p class="section-intro reveal">
+          Selecciona dos tractocamiones y contrasta de manera técnica sus motores, capacidades de carga, radio de giro y aplicaciones en el territorio nacional.
+        </p>
+      </div>
+
+      <!-- Selectores de Comparación -->
+      <div class="comp-selectors-bar reveal">
+        <div class="comp-selector-box">
+          <label for="compSelectA">🚛 Camión A:</label>
+          <select class="comp-select" id="compSelectA" aria-label="Seleccionar Camión A"></select>
+        </div>
+
+        <div class="comp-vs-badge" aria-hidden="true">VS</div>
+
+        <div class="comp-selector-box">
+          <label for="compSelectB">🚚 Camión B:</label>
+          <select class="comp-select" id="compSelectB" aria-label="Seleccionar Camión B"></select>
+        </div>
+      </div>
+
+      <!-- Cabeceras de Tarjetas Duales -->
+      <div class="comp-cards-dual reveal">
+        <div class="comp-header-card card-a" id="compCardA"></div>
+        <div class="comp-header-card card-b" id="compCardB"></div>
+      </div>
+
+      <!-- Barras de Métricas Comparativas -->
+      <div class="comp-metrics-box reveal" id="compBarsContainer"></div>
+
+      <!-- Tabla Comparativa Detallada -->
+      <div class="comp-table-wrap reveal">
+        <table class="comp-table">
+          <thead>
+            <tr>
+              <th>Especificación</th>
+              <th>Camión A</th>
+              <th>Camión B</th>
+            </tr>
+          </thead>
+          <tbody id="compTableBody"></tbody>
+        </table>
+      </div>
+
+      <!-- Veredicto Técnico Imparcial -->
+      <div class="comp-verdict-box reveal">
+        <h4>📋 Análisis Técnico de Aplicación:</h4>
+        <p id="compVerdictText">Selecciona dos modelos para ver el veredicto de carretera.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SECCIÓN: JUEGO DESAFÍO DE LA LÍNEA (CONDUCCIÓN) ============ -->
+  <section class="section" id="juego">
+    <div class="container">
+      <div class="section-header">
+        <p class="eyebrow reveal">Destreza & Conducción en Carretera</p>
+        <h2 class="reveal">Desafío de la Línea</h2>
+        <p class="section-intro reveal">
+          Conduce tu tractocamión por las curvas de la cordillera colombiana: esquiva el tráfico, recoge combustible y fletes, y usa el freno Jake Brake para no quemar las zapatas en el descenso.
+        </p>
+      </div>
+
+      <!-- Selector de Tractomula para Conducir -->
+      <div class="runner-selector-bar reveal">
+        <span class="runner-selector-label">Elige tu Mula:</span>
+        <div class="runner-selector-group">
+          <button class="truck-select-btn active" data-truck="t800">🟡 Kenworth T800</button>
+          <button class="truck-select-btn" data-truck="international-9400i">🟤 Eagle 9400i</button>
+          <button class="truck-select-btn" data-truck="w900">⚪ Kenworth W900</button>
+          <button class="truck-select-btn" data-truck="t680">🔴 Kenworth T680</button>
+        </div>
+      </div>
+
+      <!-- Tablero HUD de Telemetría de Carrera -->
+      <div class="runner-hud-bar reveal">
+        <div class="runner-hud-item">
+          <span class="hud-mini-label">DISTANCIA</span>
+          <strong id="gameDistanceVal">0m / 5000m</strong>
+        </div>
+        <div class="runner-hud-item">
+          <span class="hud-mini-label">VELOCIDAD</span>
+          <strong id="gameSpeedVal">0 km/h</strong>
+        </div>
+        <div class="runner-hud-item">
+          <span class="hud-mini-label">TEMP. FRENOS</span>
+          <strong id="gameBrakeTempVal" style="color: #10b981;">20%</strong>
+        </div>
+        <div class="runner-hud-item">
+          <span class="hud-mini-label">COMBUSTIBLE</span>
+          <strong id="gameFuelVal" style="color: #38bdf8;">100%</strong>
+        </div>
+        <div class="runner-hud-item">
+          <span class="hud-mini-label">PUNTAJE</span>
+          <strong id="gameScoreVal" style="color: var(--amarillo-vial);">0</strong>
+        </div>
+      </div>
+
+      <!-- Marco del Juego Canvas -->
+      <div class="runner-stage-box reveal">
+        <canvas id="gameCanvas" width="640" height="520"></canvas>
+
+        <!-- Pantalla de Inicio -->
+        <div class="runner-overlay" id="gameStartScreen">
+          <div class="runner-modal-card">
+            <span class="runner-modal-icon">🚛</span>
+            <h3>DESAFÍO ALTO DE LA LÍNEA</h3>
+            <p>Recorre 5,000 metros esquivando vehículos y derrumbes. Usa las flechas o teclas A/D para maniobrar, W para acelerar y ESPACIO para activar el Freno Jake Brake.</p>
+            <button class="btn btn-primary" id="btnStartTruckGame">▶ ¡COMENZAR RUTA!</button>
+          </div>
+        </div>
+
+        <!-- Pantalla de Game Over (Varada) -->
+        <div class="runner-overlay" id="gameOverScreen" style="display: none;">
+          <div class="runner-modal-card">
+            <span class="runner-modal-icon">💥</span>
+            <h3>¡VARADA EN CARRETERA!</h3>
+            <p>Tuviste un percance en el descenso. Distancia alcanzada: <strong id="overFinalDist">0m</strong> | Puntaje: <strong id="overFinalScore">0</strong></p>
+            <button class="btn btn-primary" id="btnRestartOver">🔄 Intentar de Nuevo</button>
+          </div>
+        </div>
+
+        <!-- Pantalla de Victoria (Coronada) -->
+        <div class="runner-overlay" id="gameWinScreen" style="display: none;">
+          <div class="runner-modal-card">
+            <span class="runner-modal-icon">🏆</span>
+            <h3>¡CORONASTE LA LÍNEA!</h3>
+            <p>¡Llegaste a la cima con toda la carga intacta! Eres el nuevo Patrón de la Cordillera. Puntaje final: <strong id="winFinalScore">0</strong></p>
+            <button class="btn btn-primary" id="btnRestartWin">🔄 Jugar Otra Ruta</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Controles Táctiles para Móviles / Pantalla -->
+      <div class="runner-touch-controls reveal">
+        <div class="touch-steer-group">
+          <button class="runner-touch-btn" id="ctrlLeft" aria-label="Girar a la izquierda">⬅️ Izquierda</button>
+          <button class="runner-touch-btn" id="ctrlRight" aria-label="Girar a la derecha">➡️ Derecha</button>
+        </div>
+        <div class="touch-action-group">
+          <button class="runner-touch-btn btn-action-jake" id="ctrlJake" aria-label="Activar Jake Brake">🛑 Jake Brake</button>
+          <button class="runner-touch-btn btn-action-gas" id="ctrlGas" aria-label="Acelerar a fondo">🚀 Acelerar</button>
+          <button class="runner-touch-btn btn-action-horn" id="ctrlHorn" aria-label="Corneta Hadley">📢 Corneta</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============ MODAL DE FICHA TÉCNICA (ACCESIBLE) ============ -->
+<div class="modal-backdrop" id="truckModal" hidden role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal-card">
+    <div class="modal-header-bar">
+      <span class="modal-title-text" id="modalTitle">FICHA TÉCNICA HOMOLOGADA</span>
+      <button class="modal-close" id="modalCloseBtn" aria-label="Cerrar ficha técnica">×</button>
+    </div>
+    <div class="modal-body" id="modalContentBody"></div>
+  </div>
+</div>
+
+<!-- ============ FOOTER ============ -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <p class="footer-brand">🇨🇴 COLOMBIA<span>TRUCKS</span></p>
+        <p class="footer-desc">Potencia, carretera y leyenda sobre ruedas. Un homenaje a la cultura camionera y los transportadores de Colombia.</p>
+      </div>
+
+      <div class="footer-col">
+        <h4>Navegación</h4>
+        <ul class="footer-links">
+          <li><a href="#camiones">Camiones</a></li>
+          <li><a href="#tablero">Tablero</a></li>
+          <li><a href="#historia">Historia</a></li>
+          <li><a href="#rutas">Rutas</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Funciones</h4>
+        <ul class="footer-links">
+          <li><a href="#comparador">Comparador</a></li>
+          <li><a href="#juego">Memoria Camionera</a></li>
+          <li><a href="#multimedia">Sonidos Diésel</a></li>
+          <li><a href="#inicio">Volver arriba</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-easter-egg-box">
+        <strong>⌨️ Atajos de Teclado (Easter Eggs):</strong>
+        <p>• Presiona <kbd>H</kbd> para sonar la Corneta de Aire.</p>
+        <p>• Presiona <kbd>T</kbd> para ir al Simulador de Tablero.</p>
+        <p>• Presiona <kbd>R</kbd> para explorar una ruta de montaña aleatoria.</p>
+      </div>
+    </div>
+
+    <div class="footer-bottom-bar">
+      <p>© 2026 Colombia Trucks · Plataforma Web 100% Responsiva.</p>
+      <p>Construido con HTML5 Semántico, CSS Grid & JavaScript ES6+ Modular.</p>
+    </div>
+  </div>
+</footer>
+
+<a href="#inicio" class="to-top" id="toTop" aria-label="Volver arriba">↑</a>
+
+<!-- ============ CHATBOT "PREGÚNTALE AL CAMIONERO" ============ -->
+<button class="chat-fab" id="chatFab" aria-label="Abrir asistente camionero" aria-expanded="false">
+  <span aria-hidden="true">🚛</span>
+</button>
+
+<div class="chat-window" id="chatWindow" hidden>
+  <div class="chat-header">
+    <div>
+      <p class="chat-title"><span>🚛</span> Pregúntale al Camionero</p>
+      <p class="chat-sub">Asistente de especificaciones, rutas y cajas Fuller</p>
+    </div>
+    <button class="chat-close" id="chatClose" aria-label="Cerrar chat">×</button>
+  </div>
+
+  <div class="chat-messages" id="chatMessages" aria-live="polite"></div>
+
+  <div class="chat-chips" id="chatChips"></div>
+
+  <form class="chat-input-row" id="chatForm" autocomplete="off">
+    <input type="text" id="chatInput" placeholder="Escribe tu pregunta sobre camiones..." aria-label="Escribe tu pregunta">
+    <button type="submit" class="chat-send" aria-label="Enviar pregunta">➤</button>
+  </form>
+</div>
+
+<!-- ============ SCRIPTS DEL PROYECTO ============ -->
+<script src="js/trucks-data.js"></script>
+<script src="js/routes-data.js"></script>
+<script src="js/canvas-hero.js"></script>
+<script src="js/dashboard.js"></script>
+<script src="js/comparator.js"></script>
+<script src="js/truck-runner.js"></script>
+<script src="js/chatbot.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

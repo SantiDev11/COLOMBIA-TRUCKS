@@ -1,0 +1,3115 @@
+/* ============================================================
+   COLOMBIA TRUCKS — CSS Moderno, Industrial & 100% Responsivo
+   Paleta inspirada en carreteras colombianas, cromo pulido,
+   asfalto nocturno y luces de tractocamiones.
+   ============================================================ */
+
+/* ---------- 1. Variables de Diseño (Custom Properties) ---------- */
+:root {
+  /* Colores de Asfalto & Noche */
+  --asfalto-bg:       #080c10;
+  --asfalto-card:     #0f1722;
+  --asfalto-card-2:   #15202e;
+  --asfalto-border:   #1f2d3d;
+  --asfalto-hover:    #1c293a;
+
+  /* Cromo & Metales */
+  --cromo-light:      #f8fafc;
+  --cromo-mid:        #cbd5e1;
+  --cromo-dark:       #64748b;
+  --cromo-border:     rgba(203, 213, 225, 0.18);
+
+  /* Acentos de Carretera & Luces */
+  --amarillo-vial:    #ffb703;
+  --amarillo-glow:    rgba(255, 183, 3, 0.35);
+  --rojo-freno:       #ef233c;
+  --rojo-glow:        rgba(239, 35, 60, 0.35);
+  --verde-torque:     #10b981;
+  --verde-glow:       rgba(16, 185, 129, 0.35);
+  --azul-led:         #38bdf8;
+  --azul-glow:        rgba(56, 189, 248, 0.35);
+
+  /* Texto */
+  --text-main:        #f1f5f9;
+  --text-muted:       #94a3b8;
+  --text-dim:         #64748b;
+
+  /* Tipografías */
+  --f-display:        "Barlow Condensed", "Outfit", "Arial Black", sans-serif;
+  --f-body:           "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --f-mono:           "JetBrains Mono", "SF Mono", Consolas, monospace;
+
+  /* Escala Tipográfica Fluida */
+  --fs-hero:          clamp(2.4rem, 7.5vw, 5.8rem);
+  --fs-h2:            clamp(1.8rem, 4vw, 3rem);
+  --fs-h3:            clamp(1.2rem, 2.2vw, 1.65rem);
+  --fs-body:          1rem;
+  --fs-small:         0.85rem;
+
+  /* Layout & Efectos */
+  --container:        1200px;
+  --radius-sm:        8px;
+  --radius-md:        14px;
+  --radius-lg:        20px;
+  --gap:              clamp(1rem, 2.5vw, 2.2rem);
+  --shadow-card:      0 12px 36px rgba(0, 0, 0, 0.55);
+  --shadow-glow:      0 0 24px rgba(255, 183, 3, 0.2);
+  --transition:       0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ---------- 2. Reset & Estilos Base ---------- */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  color-scheme: dark;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  font-family: var(--f-body);
+  font-size: var(--fs-body);
+  line-height: 1.65;
+  color: var(--text-main);
+  background-color: var(--asfalto-bg);
+  background-image: 
+    radial-gradient(circle at 50% 0%, rgba(255, 183, 3, 0.05) 0%, transparent 60%),
+    linear-gradient(180deg, #080c10 0%, #0b1017 100%);
+  -webkit-font-smoothing: antialiased;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--f-display);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  line-height: 1.1;
+  word-break: break-word;
+}
+
+h2 {
+  font-size: var(--fs-h2);
+  margin-bottom: 0.5rem;
+  color: var(--cromo-light);
+}
+
+h3 {
+  font-size: var(--fs-h3);
+  margin-bottom: 0.4rem;
+}
+
+a {
+  color: var(--amarillo-vial);
+  text-decoration: none;
+  transition: color var(--transition);
+}
+
+a:hover {
+  color: #ffca40;
+}
+
+:focus-visible {
+  outline: 3px solid var(--amarillo-vial);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ---------- 3. Utilidades de Layout & Grillas ---------- */
+.container {
+  width: 100%;
+  max-width: var(--container);
+  margin-inline: auto;
+  padding-inline: clamp(1rem, 3.5vw, 2rem);
+}
+
+.grid {
+  display: grid;
+  gap: var(--gap);
+  width: 100%;
+}
+
+.grid-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: center;
+}
+
+.cards-grid {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+}
+
+.section {
+  padding-block: clamp(3.5rem, 7vw, 6rem);
+  position: relative;
+  width: 100%;
+}
+
+.section-alt {
+  background-color: rgba(15, 23, 34, 0.6);
+  border-block: 1px solid var(--asfalto-border);
+}
+
+.section-header {
+  margin-bottom: clamp(1.8rem, 3.5vw, 3rem);
+}
+
+.eyebrow {
+  font-family: var(--f-display);
+  font-size: var(--fs-small);
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--amarillo-vial);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.eyebrow::before {
+  content: "";
+  display: inline-block;
+  width: 12px;
+  height: 3px;
+  background: var(--amarillo-vial);
+  border-radius: 2px;
+}
+
+.section-intro {
+  max-width: 65ch;
+  color: var(--text-muted);
+  font-size: clamp(0.95rem, 1.8vw, 1.1rem);
+}
+
+/* ---------- 4. Botones & Badges ---------- */
+.btn {
+  font-family: var(--f-display);
+  font-weight: 800;
+  font-size: clamp(0.92rem, 1.8vw, 1.05rem);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.8rem 1.6rem;
+  border-radius: var(--radius-sm);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  border: 0;
+  text-decoration: none;
+  min-height: 44px;
+  touch-action: manipulation;
+  transition: transform var(--transition), background var(--transition), box-shadow var(--transition), color var(--transition), border-color var(--transition);
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #ffb703 0%, #f59e0b 100%);
+  color: #0b0f14;
+  box-shadow: 0 4px 16px rgba(255, 183, 3, 0.3);
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #ffd056 0%, #ffb703 100%);
+  box-shadow: 0 6px 22px rgba(255, 183, 3, 0.45);
+  color: #000;
+}
+
+.btn-secondary {
+  background: var(--asfalto-card-2);
+  color: var(--cromo-light);
+  border: 1px solid var(--asfalto-border);
+}
+
+.btn-secondary:hover {
+  background: var(--asfalto-hover);
+  border-color: var(--cromo-dark);
+}
+
+.btn-ghost {
+  background: transparent;
+  border: 1.5px solid var(--cromo-border);
+  color: var(--cromo-light);
+}
+
+.btn-ghost:hover {
+  border-color: var(--amarillo-vial);
+  color: var(--amarillo-vial);
+  background: rgba(255, 183, 3, 0.05);
+}
+
+.btn-sm {
+  padding: 0.55rem 1rem;
+  font-size: 0.88rem;
+  min-height: 38px;
+}
+
+/* ---------- 5. Navegación Principal ---------- */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 90;
+  background: rgba(8, 12, 16, 0.92);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--asfalto-border);
+  width: 100%;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 68px;
+}
+
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--f-display);
+  font-weight: 900;
+  font-size: clamp(1.4rem, 3.5vw, 1.8rem);
+  color: var(--cromo-light);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.nav-brand span {
+  color: var(--amarillo-vial);
+}
+
+.nav-flag-badge {
+  font-size: 1.2rem;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  list-style: none;
+}
+
+.nav-links a {
+  font-family: var(--f-display);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  position: relative;
+  padding-block: 0.35rem;
+  white-space: nowrap;
+}
+
+.nav-links a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--amarillo-vial);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--transition);
+}
+
+.nav-links a:hover {
+  color: var(--amarillo-vial);
+}
+
+.nav-links a:hover::after {
+  transform: scaleX(1);
+}
+
+.nav-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  padding: 10px;
+  width: 44px;
+  height: 44px;
+}
+
+.nav-toggle span {
+  width: 26px;
+  height: 3px;
+  background: var(--cromo-light);
+  border-radius: 2px;
+  transition: transform var(--transition), opacity var(--transition);
+}
+
+.nav-toggle.open span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+.nav-toggle.open span:nth-child(2) { opacity: 0; }
+.nav-toggle.open span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+
+/* ---------- 6. Hero con Canvas de Carretera ---------- */
+.hero {
+  position: relative;
+  min-height: clamp(520px, 80vh, 850px);
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  padding-block: clamp(3.5rem, 8vw, 7rem) clamp(2.5rem, 5vw, 4rem);
+  border-bottom: 2px solid var(--asfalto-border);
+  width: 100%;
+}
+
+#heroCanvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 20% 50%, rgba(8, 12, 16, 0.95) 0%, rgba(8, 12, 16, 0.7) 60%, rgba(8, 12, 16, 0.45) 100%);
+  z-index: 2;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 3;
+  max-width: 860px;
+  width: 100%;
+}
+
+.hero-title {
+  font-size: var(--fs-hero);
+  font-weight: 900;
+  letter-spacing: -0.01em;
+  margin-bottom: 1rem;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
+}
+
+.hero-title span {
+  color: var(--amarillo-vial);
+  display: block;
+}
+
+.hero-sub {
+  font-size: clamp(1rem, 2vw, 1.3rem);
+  color: var(--cromo-mid);
+  margin-bottom: 2rem;
+  max-width: 52ch;
+  line-height: 1.5;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+}
+
+.hero-stats {
+  position: relative;
+  z-index: 3;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(0.75rem, 2vw, 1.4rem);
+  margin-top: clamp(2.5rem, 5vw, 4.5rem);
+  padding-top: 1.8rem;
+  border-top: 1px solid rgba(203, 213, 225, 0.15);
+  width: 100%;
+}
+
+.stat-card {
+  background: rgba(15, 23, 34, 0.75);
+  backdrop-filter: blur(8px);
+  padding: clamp(0.8rem, 2vw, 1.2rem) clamp(1rem, 2vw, 1.4rem);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--asfalto-border);
+  border-left: 3px solid var(--amarillo-vial);
+}
+
+.stat-num {
+  font-family: var(--f-display);
+  font-size: clamp(1.6rem, 3vw, 2.6rem);
+  font-weight: 900;
+  color: var(--amarillo-vial);
+  line-height: 1;
+  display: block;
+  white-space: nowrap;
+}
+
+.stat-label {
+  font-family: var(--f-body);
+  font-size: clamp(0.72rem, 1.4vw, 0.82rem);
+  color: var(--text-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 0.3rem;
+  display: block;
+}
+
+/* ---------- 7. Catálogo "Los Gigantes de la Carretera" ---------- */
+.catalog-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  background: var(--asfalto-card);
+  padding: 1rem 1.2rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--asfalto-border);
+  width: 100%;
+}
+
+.filter-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.filter-btn {
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-size: 0.9rem;
+  letter-spacing: 0.04em;
+  padding: 0.4rem 0.85rem;
+  border-radius: 999px;
+  background: var(--asfalto-card-2);
+  color: var(--text-muted);
+  border: 1px solid var(--asfalto-border);
+  cursor: pointer;
+  min-height: 36px;
+  touch-action: manipulation;
+  transition: all var(--transition);
+}
+
+.filter-btn:hover {
+  background: var(--asfalto-hover);
+  color: var(--cromo-light);
+}
+
+.filter-btn.active {
+  background: var(--amarillo-vial);
+  color: #0b0f14;
+  border-color: var(--amarillo-vial);
+  font-weight: 800;
+}
+
+.search-box {
+  position: relative;
+  min-width: 220px;
+  flex: 1;
+  max-width: 380px;
+}
+
+.search-box input {
+  width: 100%;
+  background: var(--asfalto-bg);
+  border: 1px solid var(--asfalto-border);
+  border-radius: 999px;
+  padding: 0.55rem 1rem 0.55rem 2.4rem;
+  color: var(--text-main);
+  font-family: var(--f-body);
+  font-size: 0.9rem;
+}
+
+.search-box input:focus {
+  outline: none;
+  border-color: var(--amarillo-vial);
+}
+
+.search-icon {
+  position: absolute;
+  left: 0.85rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-dim);
+  font-size: 0.85rem;
+}
+
+.catalog-count-bar {
+  margin-bottom: 1.5rem;
+  font-family: var(--f-display);
+  font-weight: 700;
+  color: var(--amarillo-vial);
+  letter-spacing: 0.05em;
+}
+
+/* Tarjetas de Camiones */
+.truck-card {
+  background: var(--asfalto-card);
+  border: 1px solid var(--asfalto-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-card);
+  width: 100%;
+  transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition);
+}
+
+.truck-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--amarillo-vial);
+  box-shadow: var(--shadow-glow), 0 16px 36px rgba(0, 0, 0, 0.7);
+}
+
+.truck-card-media {
+  position: relative;
+  height: clamp(200px, 30vw, 240px);
+  overflow: hidden;
+  border-bottom: 1px solid var(--asfalto-border);
+  width: 100%;
+  background: #05080c;
+}
+
+.truck-card-real-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 0.5s ease;
+}
+
+.truck-card:hover .truck-card-real-img {
+  transform: scale(1.06);
+}
+
+.truck-card-img-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(8, 12, 16, 0.3) 0%, transparent 40%, rgba(8, 12, 16, 0.85) 100%);
+  pointer-events: none;
+}
+
+.truck-card-badge-top {
+  position: absolute;
+  top: 0.8rem;
+  left: 0.8rem;
+  background: rgba(8, 12, 16, 0.88);
+  backdrop-filter: blur(6px);
+  border: 1px solid var(--amarillo-vial);
+  color: var(--amarillo-vial);
+  font-family: var(--f-display);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  padding: 0.2rem 0.55rem;
+  border-radius: 4px;
+  z-index: 2;
+}
+
+.truck-color-tag {
+  position: absolute;
+  top: 0.8rem;
+  right: 0.8rem;
+  background: rgba(15, 23, 34, 0.88);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: var(--cromo-light);
+  font-family: var(--f-display);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 0.2rem 0.55rem;
+  border-radius: 4px;
+  z-index: 2;
+}
+
+.truck-tech-tag {
+  position: absolute;
+  bottom: 0.6rem;
+  right: 0.6rem;
+  font-family: var(--f-body);
+  font-size: 0.72rem;
+  color: var(--amarillo-vial);
+  background: rgba(8, 12, 16, 0.9);
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  z-index: 2;
+}
+
+.truck-card-body {
+  padding: clamp(1rem, 2.5vw, 1.4rem);
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.truck-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.8rem;
+  margin-bottom: 0.6rem;
+}
+
+.truck-brand-tag {
+  font-family: var(--f-display);
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--amarillo-vial);
+  letter-spacing: 0.06em;
+}
+
+.truck-title {
+  font-size: clamp(1.3rem, 2.5vw, 1.55rem);
+  color: var(--cromo-light);
+}
+
+.fav-btn {
+  background: none;
+  border: 0;
+  font-size: 1.3rem;
+  cursor: pointer;
+  padding: 6px;
+  min-width: 36px;
+  min-height: 36px;
+  display: grid;
+  place-items: center;
+  touch-action: manipulation;
+  transition: transform 0.2s ease;
+}
+
+.fav-btn:hover {
+  transform: scale(1.2);
+}
+
+.truck-desc {
+  font-size: 0.92rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin-bottom: 1.1rem;
+}
+
+.truck-specs-pills {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+  margin-bottom: 1.2rem;
+}
+
+.spec-pill {
+  background: var(--asfalto-bg);
+  border: 1px solid var(--asfalto-border);
+  padding: 0.45rem 0.65rem;
+  border-radius: var(--radius-sm);
+  display: flex;
+  flex-direction: column;
+}
+
+.spec-pill-label {
+  font-size: 0.68rem;
+  color: var(--text-dim);
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.spec-pill-val {
+  font-family: var(--f-display);
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--cromo-light);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.truck-card-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  margin-top: auto;
+}
+
+.no-results-box {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 3rem 1.5rem;
+  background: var(--asfalto-card);
+  border-radius: var(--radius-md);
+  border: 1px dashed var(--asfalto-border);
+}
+
+.no-results-icon {
+  font-size: 3rem;
+  margin-bottom: 0.8rem;
+}
+
+/* ---------- 8. Modal de Ficha Técnica ---------- */
+.modal-backdrop[hidden] { display: none; }
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(8, 12, 16, 0.88);
+  backdrop-filter: blur(8px);
+  display: grid;
+  place-items: center;
+  padding: clamp(0.75rem, 2vw, 1.5rem);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+.modal-backdrop.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal-card {
+  background: var(--asfalto-card);
+  border: 1px solid var(--asfalto-border);
+  border-top: 4px solid var(--amarillo-vial);
+  border-radius: var(--radius-md);
+  max-width: 900px;
+  width: 100%;
+  max-height: 88vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.85);
+  transform: scale(0.96);
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  overflow: hidden;
+}
+
+.modal-backdrop.open .modal-card {
+  transform: scale(1);
+}
+
+.modal-header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.9rem 1.2rem;
+  border-bottom: 1px solid var(--asfalto-border);
+}
+
+.modal-title-text {
+  font-family: var(--f-display);
+  font-weight: 800;
+  color: var(--amarillo-vial);
+  letter-spacing: 0.08em;
+  font-size: clamp(0.95rem, 2vw, 1.1rem);
+}
+
+.modal-close {
+  background: none;
+  border: 0;
+  color: var(--cromo-mid);
+  font-size: 1.6rem;
+  cursor: pointer;
+  line-height: 1;
+  padding: 6px 10px;
+  min-height: 44px;
+  display: grid;
+  place-items: center;
+  touch-action: manipulation;
+}
+
+.modal-close:hover {
+  color: var(--rojo-freno);
+}
+
+.modal-body {
+  padding: clamp(1rem, 3vw, 1.6rem);
+  overflow-y: auto;
+}
+
+/* Banner de Foto en Modal */
+.modal-truck-hero-img {
+  position: relative;
+  height: clamp(180px, 25vw, 260px);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  margin-bottom: 1.2rem;
+  border: 1px solid var(--asfalto-border);
+}
+
+.modal-img-banner {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.modal-img-gradient {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 40%, rgba(8, 12, 16, 0.9) 100%);
+}
+
+.modal-img-badge {
+  position: absolute;
+  bottom: 0.8rem;
+  left: 0.8rem;
+  background: var(--amarillo-vial);
+  color: #0b0f14;
+  font-family: var(--f-display);
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  padding: 0.25rem 0.7rem;
+  border-radius: 4px;
+}
+
+.modal-truck-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--asfalto-border);
+}
+
+.modal-tagline {
+  color: var(--cromo-mid);
+  font-size: 0.98rem;
+  margin-top: 0.2rem;
+}
+
+.modal-year-pill {
+  background: var(--asfalto-card-2);
+  border: 1px solid var(--asfalto-border);
+  padding: 0.35rem 0.8rem;
+  border-radius: 999px;
+  font-family: var(--f-display);
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--amarillo-vial);
+  white-space: nowrap;
+}
+
+.modal-grid-sections {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.modal-card-spec {
+  background: var(--asfalto-bg);
+  border: 1px solid var(--asfalto-border);
+  border-radius: var(--radius-sm);
+  padding: 1rem;
+}
+
+.modal-card-title {
+  font-family: var(--f-display);
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--amarillo-vial);
+  margin-bottom: 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  border-bottom: 1px solid var(--asfalto-border);
+  padding-bottom: 0.35rem;
+}
+
+.spec-list {
+  list-style: none;
+  display: grid;
+  gap: 0.45rem;
+  font-size: 0.88rem;
+}
+
+.spec-list li {
+  display: flex;
+  flex-direction: column;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.05);
+  padding-bottom: 0.25rem;
+}
+
+.spec-list li strong {
+  color: var(--text-dim);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+}
+
+.spec-list li span {
+  color: var(--cromo-light);
+  font-weight: 600;
+}
+
+.modal-note-box {
+  margin-top: 1.2rem;
+  background: rgba(255, 183, 3, 0.05);
+  border-left: 3px solid var(--amarillo-vial);
+  padding: 0.75rem 1rem;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+/* ---------- 9. Sección "Por Dentro" (Cabina & Tablero Interactivo) ---------- */
+.dashboard-simulator {
+  background: radial-gradient(circle at 50% 30%, #152233 0%, #0c141e 100%);
+  border: 2px solid #233549;
+  border-radius: var(--radius-lg);
+  padding: clamp(1rem, 2.5vw, 2.2rem);
+  box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.8), 0 20px 50px rgba(0, 0, 0, 0.7);
+  margin-bottom: 2.5rem;
+  width: 100%;
+}
+
+.dash-cluster-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+  margin-bottom: 1.6rem;
+  padding-bottom: 0.8rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.dash-logo-title {
+  font-family: var(--f-display);
+  font-size: clamp(1.1rem, 2.5vw, 1.35rem);
+  font-weight: 900;
+  color: var(--amarillo-vial);
+  letter-spacing: 0.08em;
+}
+
+.dash-warning-leds {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.dash-led {
+  font-family: var(--f-display);
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #475569;
+  transition: all 0.2s ease;
+}
+
+.dash-led.led-engine.active {
+  background: rgba(255, 183, 3, 0.2);
+  border-color: var(--amarillo-vial);
+  color: var(--amarillo-vial);
+  box-shadow: 0 0 10px var(--amarillo-glow);
+}
+
+.dash-led.led-jake.active {
+  background: rgba(16, 185, 129, 0.25);
+  border-color: var(--verde-torque);
+  color: var(--verde-torque);
+  box-shadow: 0 0 10px var(--verde-glow);
+}
+
+.dash-led.led-air.active {
+  background: rgba(239, 35, 60, 0.25);
+  border-color: var(--rojo-freno);
+  color: var(--rojo-freno);
+  box-shadow: 0 0 10px var(--rojo-glow);
+}
+
+.dash-led.led-diff.active {
+  background: rgba(56, 189, 248, 0.2);
+  border-color: var(--azul-led);
+  color: var(--azul-led);
+  box-shadow: 0 0 10px var(--azul-glow);
+}
+
+/* Grilla de Medidores Gauges */
+.dash-gauges-row {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(0.75rem, 2vw, 1.4rem);
+  align-items: center;
+  margin-bottom: 2rem;
+  width: 100%;
+}
+
+.gauge-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+}
+
+.gauge-bezel {
+  position: relative;
+  width: min(160px, 100%);
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #1e2d3d 0%, #0a0f16 70%);
+  border: 4px solid #3b4e63;
+  box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.9), 0 6px 16px rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gauge-bezel.large {
+  width: min(190px, 100%);
+}
+
+.gauge-dial-face {
+  position: absolute;
+  inset: 6px;
+  border-radius: 50%;
+  background: #080c12;
+  overflow: hidden;
+}
+
+.gauge-needle {
+  position: absolute;
+  bottom: 50%;
+  left: calc(50% - 1.5px);
+  width: 3px;
+  height: 42%;
+  background: linear-gradient(to top, #ff3333, #ffb703);
+  transform-origin: bottom center;
+  transform: rotate(-120deg);
+  border-radius: 2px;
+  transition: transform 0.08s ease-out;
+  box-shadow: 0 0 6px rgba(255, 51, 51, 0.8);
+  z-index: 5;
+}
+
+.gauge-center-cap {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #cbd5e1, #1e293b);
+  border: 2px solid #0f172a;
+  z-index: 6;
+}
+
+.gauge-eco-zone {
+  position: absolute;
+  top: 15%;
+  right: 18%;
+  font-size: 0.62rem;
+  font-weight: 800;
+  color: var(--verde-torque);
+}
+
+.gauge-info {
+  margin-top: 0.6rem;
+}
+
+.gauge-title {
+  font-family: var(--f-display);
+  font-size: clamp(0.85rem, 1.8vw, 0.95rem);
+  font-weight: 800;
+  color: var(--cromo-light);
+  letter-spacing: 0.04em;
+}
+
+.gauge-digital-val {
+  font-family: var(--f-mono);
+  font-size: clamp(0.95rem, 2vw, 1.1rem);
+  font-weight: 700;
+  color: var(--amarillo-vial);
+}
+
+/* Controles del Simulador */
+.dash-controls-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  background: rgba(10, 15, 22, 0.85);
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  width: 100%;
+}
+
+.dash-btn {
+  font-family: var(--f-display);
+  font-weight: 800;
+  font-size: clamp(0.92rem, 1.8vw, 1rem);
+  letter-spacing: 0.06em;
+  padding: 0.7rem 1.4rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  border: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  min-height: 44px;
+  touch-action: manipulation;
+  transition: all 0.15s ease;
+}
+
+.btn-ignition {
+  background: #1e293b;
+  color: #ffb703;
+  border: 1.5px solid #ffb703;
+}
+
+.btn-ignition.active {
+  background: #ef233c;
+  color: #fff;
+  border-color: #ef233c;
+  box-shadow: 0 0 16px var(--rojo-glow);
+}
+
+.btn-throttle {
+  background: #0284c7;
+  color: #fff;
+}
+
+.btn-throttle:active,
+.btn-throttle.active {
+  background: #38bdf8;
+  transform: scale(0.97);
+  box-shadow: 0 0 14px var(--azul-glow);
+}
+
+.btn-jake {
+  background: #065f46;
+  color: #fff;
+  border: 1.5px solid var(--verde-torque);
+}
+
+.btn-jake.active {
+  background: var(--verde-torque);
+  color: #000;
+  box-shadow: 0 0 14px var(--verde-glow);
+}
+
+.btn-horn {
+  background: #d97706;
+  color: #fff;
+}
+
+.btn-horn.active {
+  transform: scale(0.97);
+  box-shadow: 0 0 14px var(--amarillo-glow);
+}
+
+.dash-audio-source-badge {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  margin-top: 0.9rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.dash-audio-source-badge a {
+  color: var(--amarillo-vial);
+  font-weight: 700;
+  text-decoration: underline;
+  transition: color var(--transition);
+}
+
+.dash-audio-source-badge a:hover {
+  color: #fff;
+}
+
+/* Ergonomía de Cabina */
+.cabin-features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  gap: 1.2rem;
+  width: 100%;
+}
+
+.cabin-card {
+  background: var(--asfalto-card);
+  border: 1px solid var(--asfalto-border);
+  border-radius: var(--radius-md);
+  padding: 1.4rem;
+  transition: transform var(--transition), border-color var(--transition);
+}
+
+.cabin-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--cromo-dark);
+}
+
+.cabin-card-icon {
+  font-size: 2rem;
+  margin-bottom: 0.6rem;
+}
+
+.cabin-card h4 {
+  font-size: 1.2rem;
+  color: var(--amarillo-vial);
+  margin-bottom: 0.4rem;
+}
+
+.cabin-card p {
+  font-size: 0.92rem;
+  color: var(--text-muted);
+}
+
+/* ---------- 10. Timeline: Historia de los Grandes Camiones ---------- */
+.timeline {
+  list-style: none;
+  position: relative;
+  display: grid;
+  gap: 1.8rem;
+  padding-left: clamp(1.8rem, 4vw, 2.5rem);
+  border-left: 3px dashed var(--amarillo-vial);
+  margin-top: 1.5rem;
+  width: 100%;
+}
+
+.timeline-item {
+  position: relative;
+  background: var(--asfalto-card);
+  border: 1px solid var(--asfalto-border);
+  border-radius: var(--radius-md);
+  padding: clamp(1.1rem, 2.5vw, 1.6rem);
+  transition: transform var(--transition), border-color var(--transition);
+}
+
+.timeline-item:hover {
+  transform: translateX(4px);
+  border-color: var(--amarillo-vial);
+}
+
+.timeline-item::before {
+  content: "🚛";
+  position: absolute;
+  left: calc(-2.5rem - 16px);
+  top: 1.1rem;
+  width: 28px;
+  height: 28px;
+  background: var(--asfalto-card-2);
+  border: 2px solid var(--amarillo-vial);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 0.75rem;
+  box-shadow: 0 0 8px var(--amarillo-glow);
+}
+
+.timeline-year {
+  font-family: var(--f-display);
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--amarillo-vial);
+  letter-spacing: 0.06em;
+}
+
+.timeline-item h3 {
+  font-size: clamp(1.15rem, 2.2vw, 1.35rem);
+  color: var(--cromo-light);
+  margin-top: 0.2rem;
+}
+
+.timeline-item p {
+  color: var(--text-muted);
+  font-size: 0.92rem;
+  margin-top: 0.35rem;
+}
+
+/* ---------- 11. Sección Rutas de Colombia ---------- */
+.routes-grid {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: var(--gap);
+  align-items: start;
+  width: 100%;
+}
+
+.routes-nav-box {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.route-item-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  background: var(--asfalto-card);
+  border: 1px solid var(--asfalto-border);
+  border-radius: var(--radius-sm);
+  padding: 0.85rem 1rem;
+  text-align: left;
+  cursor: pointer;
+  min-height: 48px;
+  touch-action: manipulation;
+  transition: all var(--transition);
+}
+
+.route-item-btn:hover {
+  background: var(--asfalto-hover);
+  border-color: var(--cromo-dark);
+}
+
+.route-item-btn.active {
+  background: var(--asfalto-card-2);
+  border-color: var(--amarillo-vial);
+  border-left: 4px solid var(--amarillo-vial);
+}
+
+.route-btn-icon {
+  font-size: 1.5rem;
+}
+
+.route-btn-info strong {
+  display: block;
+  font-family: var(--f-display);
+  font-size: 1.08rem;
+  color: var(--cromo-light);
+}
+
+.route-btn-info small {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+}
+
+.route-details-card {
+  background: var(--asfalto-card);
+  border: 1px solid var(--asfalto-border);
+  border-radius: var(--radius-md);
+  padding: clamp(1.2rem, 3vw, 1.8rem);
+  box-shadow: var(--shadow-card);
+  width: 100%;
+}
+
+.route-header-box {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.8rem;
+  margin-bottom: 1.2rem;
+  padding-bottom: 0.8rem;
+  border-bottom: 1px solid var(--asfalto-border);
+}
+
+.route-corridor-tag {
+  font-family: var(--f-display);
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: var(--amarillo-vial);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.route-diff-badge {
+  background: rgba(239, 35, 60, 0.15);
+  border: 1px solid var(--rojo-freno);
+  color: #ff6b7b;
+  font-family: var(--f-display);
+  font-size: 0.82rem;
+  font-weight: 800;
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+}
+
+/* Grilla de Métricas de Ruta */
+.route-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.8rem;
+  margin-bottom: 1.5rem;
+  width: 100%;
+}
+
+.route-metric-card {
+  background: var(--asfalto-bg);
+  border: 1px solid var(--asfalto-border);
+  border-radius: var(--radius-sm);
+  padding: 0.85rem 0.7rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  min-height: 96px;
+}
+
+.metric-icon {
+  font-size: 1.3rem;
+  display: block;
+  margin-bottom: 0.15rem;
+}
+
+.metric-label {
+  font-size: 0.68rem;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  display: block;
+}
+
+.metric-val {
+  font-family: var(--f-display);
+  font-size: clamp(1.15rem, 2.2vw, 1.45rem);
+  font-weight: 900;
+  color: var(--amarillo-vial);
+  line-height: 1.15;
+  margin-block: 0.2rem 0.15rem;
+  display: block;
+  width: 100%;
+  word-break: normal;
+  white-space: normal;
+  text-align: center;
+}
+
+.metric-sub {
+  font-family: var(--f-body);
+  font-size: 0.73rem;
+  color: var(--text-muted);
+  line-height: 1.25;
+  display: block;
+  text-align: center;
+  width: 100%;
+}
+
+.route-section-block {
+  margin-bottom: 1.2rem;
+}
+
+.route-section-block h4 {
+  font-size: 1.05rem;
+  color: var(--cromo-light);
+  margin-bottom: 0.6rem;
+}
+
+.route-waypoints {
+  list-style: none;
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.9rem;
+}
+
+.route-waypoints li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-muted);
+}
+
+.wp-num {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--asfalto-card-2);
+  border: 1px solid var(--amarillo-vial);
+  color: var(--amarillo-vial);
+  font-family: var(--f-mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.route-advice-box {
+  background: rgba(255, 183, 3, 0.05);
+  border-left: 3px solid var(--amarillo-vial);
+  padding: 0.85rem 1.1rem;
+  border-radius: var(--radius-sm);
+}
+
+.route-advice-box h4 {
+  font-size: 1rem;
+  color: var(--amarillo-vial);
+  margin-bottom: 0.3rem;
+}
+
+.route-advice-box p {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+/* ---------- 12. Sección Multimedia & Sonidos Reales ---------- */
+.soundboard-panel {
+  background: var(--asfalto-card);
+  border: 1px solid var(--asfalto-border);
+  border-radius: var(--radius-md);
+  padding: clamp(1.2rem, 3vw, 1.8rem);
+  width: 100%;
+}
+
+.soundboard-title {
+  font-size: 1.35rem;
+  color: var(--amarillo-vial);
+  margin-bottom: 0.3rem;
+}
+
+.soundboard-sub {
+  color: var(--text-muted);
+  font-size: 0.92rem;
+  margin-bottom: 1.2rem;
+}
+
+.soundboard-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.sound-trigger-btn {
+  background: var(--asfalto-card-2);
+  border: 1px solid var(--asfalto-border);
+  border-radius: var(--radius-sm);
+  padding: 0.85rem 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-align: left;
+  cursor: pointer;
+  min-height: 48px;
+  touch-action: manipulation;
+  transition: all var(--transition);
+}
+
+.sound-trigger-btn:hover {
+  transform: translateY(-2px);
+  border-color: var(--amarillo-vial);
+  box-shadow: var(--shadow-glow);
+}
+
+.sound-trigger-btn.playing {
+  background: var(--amarillo-vial);
+  border-color: var(--amarillo-vial);
+  transform: scale(0.97);
+}
+
+.sound-trigger-btn.playing strong,
+.sound-trigger-btn.playing small {
+  color: #0b0f14;
+}
+
+.sound-btn-icon {
+  font-size: 1.6rem;
+  flex-shrink: 0;
+}
+
+.sound-btn-texts strong {
+  font-family: var(--f-display);
+  font-size: 0.98rem;
+  color: var(--cromo-light);
+  display: block;
+  line-height: 1.2;
+}
+
+.sound-btn-texts small {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  display: block;
+  margin-top: 0.1rem;
+}
+
+/* Reproductor Cinemático Showcase & Toolbar Dual */
+.multimedia-video-box {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  width: 100%;
+}
+
+.multimedia-top-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  width: 100%;
+}
+
+.video-tabs-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  flex: 1;
+}
+
+.player-mode-switch {
+  display: flex;
+  align-items: center;
+  background: var(--asfalto-card-2);
+  border: 1px solid var(--asfalto-border);
+  border-radius: 999px;
+  padding: 3px;
+  gap: 2px;
+}
+
+.mode-switch-btn {
+  background: transparent;
+  border: 0;
+  color: var(--text-muted);
+  font-family: var(--f-display);
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 0.35rem 0.8rem;
+  border-radius: 999px;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: all var(--transition);
+}
+
+.mode-switch-btn:hover {
+  color: var(--cromo-light);
+}
+
+.mode-switch-btn.active {
+  background: var(--amarillo-vial);
+  color: #0b0f14;
+  font-weight: 800;
+}
+
+.video-tab-btn {
+  flex: 1;
+  min-width: 110px;
+  background: var(--asfalto-card-2);
+  border: 1px solid var(--asfalto-border);
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  font-family: var(--f-display);
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 0.5rem 0.75rem;
+  cursor: pointer;
+  text-align: center;
+  min-height: 38px;
+  touch-action: manipulation;
+  transition: all var(--transition);
+}
+
+.video-tab-btn:hover {
+  color: var(--cromo-light);
+  border-color: var(--cromo-dark);
+}
+
+.video-tab-btn.active {
+  background: var(--asfalto-card);
+  border-color: var(--amarillo-vial);
+  color: var(--amarillo-vial);
+  border-bottom: 3px solid var(--amarillo-vial);
+}
+
+.multimedia-screen-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.video-frame-box {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 2px solid var(--asfalto-border);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.75);
+  width: 100%;
+  background: #05080c;
+}
+
+.video-frame-box iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.showcase-frame-box {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 2px solid var(--asfalto-border);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.75);
+  width: 100%;
+  background: #05080c;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.showcase-bg-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition: opacity 0.3s ease, transform 12s ease-in-out alternate infinite;
+}
+
+.showcase-frame-box:hover .showcase-bg-img {
+  transform: scale(1.08);
+}
+
+.showcase-overlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 50%, rgba(8, 12, 16, 0.35) 0%, rgba(8, 12, 16, 0.85) 100%);
+  pointer-events: none;
+}
+
+.showcase-hud {
+  position: absolute;
+  top: 0.8rem;
+  left: 0.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.hud-item {
+  background: rgba(8, 12, 16, 0.85);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 183, 3, 0.4);
+  border-radius: 4px;
+  padding: 0.2rem 0.55rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.hud-label {
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: var(--text-dim);
+  letter-spacing: 0.06em;
+}
+
+.hud-val {
+  font-family: var(--f-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--amarillo-vial);
+}
+
+.showcase-center-controls {
+  position: relative;
+  z-index: 6;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.btn-showcase-play {
+  background: rgba(15, 23, 34, 0.9);
+  backdrop-filter: blur(10px);
+  border: 2px solid var(--amarillo-vial);
+  border-radius: 999px;
+  padding: 0.75rem 1.6rem;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  cursor: pointer;
+  color: var(--cromo-light);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.8), 0 0 20px var(--amarillo-glow);
+  touch-action: manipulation;
+  transition: all var(--transition);
+}
+
+.btn-showcase-play:hover {
+  transform: scale(1.05);
+  background: var(--amarillo-vial);
+  color: #0b0f14;
+}
+
+.btn-showcase-play:hover .play-text-box strong,
+.btn-showcase-play:hover .play-text-box small {
+  color: #0b0f14;
+}
+
+.btn-showcase-play.active {
+  background: var(--rojo-freno);
+  border-color: var(--rojo-freno);
+  box-shadow: 0 0 25px var(--rojo-glow);
+}
+
+.play-icon-glow {
+  font-size: 1.8rem;
+}
+
+.play-text-box {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.play-text-box strong {
+  font-family: var(--f-display);
+  font-size: 1.05rem;
+  letter-spacing: 0.05em;
+  color: var(--amarillo-vial);
+}
+
+.play-text-box small {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.showcase-yt-badge {
+  position: absolute;
+  bottom: 0.8rem;
+  right: 0.8rem;
+  z-index: 6;
+  background: #ff0000;
+  color: #ffffff;
+  font-family: var(--f-display);
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  box-shadow: 0 4px 14px rgba(255, 0, 0, 0.5);
+  transition: all var(--transition);
+}
+
+.showcase-yt-badge:hover {
+  background: #cc0000;
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 0, 0, 0.7);
+}
+
+.yt-play-icon {
+  font-size: 0.8rem;
+}
+
+.video-caption-card {
+  background: var(--asfalto-card);
+  border: 1px solid var(--asfalto-border);
+  border-radius: var(--radius-sm);
+  padding: 1rem 1.2rem;
+}
+
+.video-caption-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  margin-bottom: 0.4rem;
+}
+
+.video-caption-header h4 {
+  font-size: 1.05rem;
+  color: var(--amarillo-vial);
+  margin-bottom: 0;
+}
+
+.btn-yt-link {
+  font-family: var(--f-display);
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #ffffff;
+  background: #ff0000;
+  border: 1px solid #ff0000;
+  padding: 0.35rem 0.8rem;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  transition: all var(--transition);
+}
+
+.btn-yt-link:hover {
+  background: #cc0000;
+  color: #fff;
+  border-color: #cc0000;
+  box-shadow: 0 0 14px rgba(255, 0, 0, 0.6);
+}
+
+.video-caption-card p {
+  color: var(--text-muted);
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+
+/* ---------- 13. Comparador de Camiones ("Compara los Gigantes") ---------- */
+.comp-selectors-bar {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 1.8rem;
+  width: 100%;
+}
+
+.comp-selector-box label {
+  font-family: var(--f-display);
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: var(--amarillo-vial);
+  letter-spacing: 0.06em;
+  display: block;
+  margin-bottom: 0.3rem;
+}
+
+.comp-select {
+  width: 100%;
+  background: var(--asfalto-card);
+  border: 1.5px solid var(--asfalto-border);
+  border-radius: var(--radius-sm);
+  padding: 0.6rem 0.9rem;
+  color: var(--cromo-light);
+  font-family: var(--f-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  cursor: pointer;
+  min-height: 44px;
+}
+
+.comp-select:focus {
+  outline: none;
+  border-color: var(--amarillo-vial);
+}
+
+.comp-vs-badge {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #ef233c;
+  color: #fff;
+  font-family: var(--f-display);
+  font-weight: 900;
+  font-size: 1.15rem;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 0 14px var(--rojo-glow);
+  flex-shrink: 0;
+}
+
+.comp-cards-dual {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.2rem;
+  margin-bottom: 2rem;
+  width: 100%;
+}
+
+.comp-header-card {
+  background: var(--asfalto-card);
+  border: 1px solid var(--asfalto-border);
+  border-top: 4px solid var(--amarillo-vial);
+  border-radius: var(--radius-md);
+  padding: 1.2rem;
+}
+
+.comp-header-card.card-b {
+  border-top-color: #38bdf8;
+}
+
+.comp-card-top-flex {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.comp-img-thumb-box {
+  width: clamp(70px, 15vw, 95px);
+  aspect-ratio: 1 / 1;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  border: 1px solid var(--asfalto-border);
+  flex-shrink: 0;
+  background: #05080c;
+}
+
+.comp-truck-thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.comp-card-texts {
+  flex: 1;
+}
+
+.comp-badge {
+  font-family: var(--f-display);
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: var(--amarillo-vial);
+}
+
+.comp-header-card.card-b .comp-badge {
+  color: #38bdf8;
+}
+
+.comp-tagline {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  margin-block: 0.2rem 0.5rem;
+}
+
+.comp-style-pill {
+  display: inline-block;
+  background: var(--asfalto-bg);
+  border: 1px solid var(--asfalto-border);
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  color: var(--cromo-mid);
+}
+
+/* Barras Métricas Duales */
+.comp-metric-row {
+  margin-bottom: 1rem;
+  width: 100%;
+}
+
+.comp-metric-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+  margin-bottom: 0.25rem;
+}
+
+.comp-metric-name {
+  font-weight: 700;
+  color: var(--cromo-light);
+}
+
+.comp-metric-scores {
+  font-family: var(--f-mono);
+  font-size: 0.82rem;
+}
+
+.score-a { color: var(--amarillo-vial); font-weight: 700; }
+.score-vs { color: var(--text-dim); margin-inline: 0.25rem; }
+.score-b { color: #38bdf8; font-weight: 700; }
+
+.comp-dual-bar {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  height: 9px;
+  background: var(--asfalto-bg);
+  border-radius: 999px;
+  overflow: hidden;
+  padding: 2px;
+}
+
+.comp-bar-side {
+  height: 100%;
+  display: flex;
+}
+
+.comp-bar-a { justify-content: flex-end; }
+.comp-bar-b { justify-content: flex-start; }
+
+.comp-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.comp-bar-fill.fill-a { background: var(--amarillo-vial); }
+.comp-bar-fill.fill-b { background: #38bdf8; }
+
+/* Tabla de Comparación */
+.comp-table-wrap {
+  overflow-x: auto;
+  margin-block: 1.5rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--asfalto-border);
+  width: 100%;
+  -webkit-overflow-scrolling: touch;
+}
+
+.comp-table {
+  width: 100%;
+  min-width: 540px;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.comp-table th,
+.comp-table td {
+  padding: 0.8rem 1rem;
+  border-bottom: 1px solid var(--asfalto-border);
+}
+
+.comp-table th {
+  background: var(--asfalto-card-2);
+  font-family: var(--f-display);
+  font-size: 0.98rem;
+  text-transform: uppercase;
+  text-align: left;
+}
+
+.comp-table tr:hover td {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.comp-label {
+  color: var(--amarillo-vial);
+  width: 25%;
+}
+
+.comp-val-a,
+.comp-val-b {
+  color: var(--cromo-light);
+  width: 37.5%;
+}
+
+.comp-verdict-box {
+  background: var(--asfalto-card);
+  border: 1px solid var(--asfalto-border);
+  border-left: 4px solid var(--verde-torque);
+  border-radius: var(--radius-md);
+  padding: 1.2rem;
+}
+
+.comp-verdict-box h4 {
+  font-size: 1.15rem;
+  color: var(--verde-torque);
+  margin-bottom: 0.3rem;
+}
+
+.comp-verdict-box p {
+  color: var(--text-muted);
+  font-size: 0.92rem;
+}
+
+/* ---------- 14. Juego: Memoria Camionera ---------- */
+.game-hud {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  background: var(--asfalto-card);
+  border: 1px solid var(--asfalto-border);
+  border-radius: var(--radius-md);
+  padding: 0.85rem 1.2rem;
+  margin-bottom: 1.5rem;
+  width: 100%;
+}
+
+.hud-stat {
+  font-family: var(--f-display);
+  font-size: clamp(0.95rem, 2vw, 1.1rem);
+  color: var(--cromo-mid);
+}
+
+.hud-stat span {
+  color: var(--amarillo-vial);
+  font-size: 1.2em;
+  font-weight: 800;
+}
+
+.game-board {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(0.4rem, 1.5vw, 0.9rem);
+  max-width: 820px;
+  margin-inline: auto;
+  width: 100%;
+}
+
+.mcard {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  perspective: 900px;
+  width: 100%;
+  touch-action: manipulation;
+}
+
+.mcard-inner {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  border-radius: var(--radius-sm);
+}
+
+.mcard.is-flipped .mcard-inner {
+  transform: rotateY(180deg);
+}
+
+.mcard-front,
+.mcard-back {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  backface-visibility: hidden;
+  padding: 0.5rem;
+  text-align: center;
+}
+
+.mcard-front {
+  background: radial-gradient(circle at 50% 30%, #1a2636 0%, #0c1219 80%);
+  border: 2px solid #293a4e;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.mcard:hover .mcard-front {
+  transform: translateY(-2px);
+  border-color: var(--amarillo-vial);
+  box-shadow: var(--shadow-glow);
+}
+
+.mcard-logo {
+  font-size: clamp(1.4rem, 4vw, 2.2rem);
+  margin-bottom: 0.2rem;
+}
+
+.mcard-front-text {
+  font-family: var(--f-display);
+  font-size: clamp(0.65rem, 1.6vw, 0.8rem);
+  font-weight: 900;
+  color: var(--amarillo-vial);
+  letter-spacing: 0.06em;
+  line-height: 1.1;
+}
+
+.mcard-back {
+  transform: rotateY(180deg);
+  background: var(--asfalto-card-2);
+  border: 2px solid var(--amarillo-vial);
+}
+
+.mcard-back.hint {
+  border-color: #38bdf8;
+}
+
+.mcard-back-icon {
+  font-size: clamp(1.3rem, 3.5vw, 1.8rem);
+  margin-bottom: 0.2rem;
+}
+
+.mcard-back-title {
+  font-family: var(--f-display);
+  font-size: clamp(0.72rem, 2vw, 0.92rem);
+  font-weight: 800;
+  color: var(--cromo-light);
+  line-height: 1.15;
+}
+
+.mcard-back-sub {
+  font-size: clamp(0.6rem, 1.4vw, 0.68rem);
+  color: var(--amarillo-vial);
+  margin-top: 0.2rem;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.mcard.is-matched .mcard-inner {
+  animation: match-pulse 0.5s ease;
+  box-shadow: 0 0 0 2px var(--amarillo-vial), 0 0 16px var(--amarillo-glow);
+}
+
+@keyframes match-pulse {
+  0% { transform: rotateY(180deg) scale(1); }
+  50% { transform: rotateY(180deg) scale(1.06); }
+  100% { transform: rotateY(180deg) scale(1); }
+}
+
+.mcard.shake .mcard-inner {
+  animation: card-shake 0.4s ease;
+}
+
+@keyframes card-shake {
+  0%, 100% { transform: rotateY(180deg) translateX(0); }
+  25% { transform: rotateY(180deg) translateX(-6px); }
+  50% { transform: rotateY(180deg) translateX(6px); }
+  75% { transform: rotateY(180deg) translateX(-3px); }
+}
+
+/* Pantalla de Victoria */
+.game-win[hidden] { display: none; }
+.game-win {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  background: rgba(8, 12, 16, 0.88);
+  backdrop-filter: blur(8px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  padding: 1rem;
+}
+
+.game-win.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.game-win-card {
+  background: var(--asfalto-card);
+  border: 2px solid var(--amarillo-vial);
+  border-radius: var(--radius-md);
+  padding: clamp(1.5rem, 4vw, 2.2rem);
+  text-align: center;
+  max-width: 420px;
+  width: 100%;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.85), var(--shadow-glow);
+  transform: scale(0.92);
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.game-win.show .game-win-card { transform: scale(1); }
+
+.win-trophy {
+  font-size: 3rem;
+  margin-bottom: 0.4rem;
+  animation: trophy-float 2s ease-in-out infinite;
+}
+
+@keyframes trophy-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+.game-win-card h3 {
+  font-size: clamp(1.4rem, 3.5vw, 1.7rem);
+  color: var(--amarillo-vial);
+  margin-bottom: 0.6rem;
+}
+
+.game-win-card p {
+  color: var(--text-muted);
+  margin-bottom: 1.5rem;
+  font-size: 0.98rem;
+}
+
+/* ---------- 15. Chatbot ("Pregúntale al Camionero") ---------- */
+.chat-fab {
+  position: fixed;
+  right: clamp(1rem, 3vw, 1.5rem);
+  bottom: 5.5rem;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ffb703 0%, #d97706 100%);
+  color: #0b0f14;
+  font-size: 1.6rem;
+  border: 0;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(255, 183, 3, 0.4);
+  z-index: 80;
+  display: grid;
+  place-items: center;
+  touch-action: manipulation;
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+
+.chat-fab:hover {
+  transform: scale(1.08);
+  box-shadow: 0 12px 30px rgba(255, 183, 3, 0.6);
+}
+
+.chat-window[hidden] { display: none; }
+.chat-window {
+  position: fixed;
+  right: clamp(0.75rem, 2vw, 1.5rem);
+  bottom: 5.5rem;
+  width: min(390px, calc(100vw - 1.5rem));
+  height: min(560px, calc(100vh - 7rem));
+  background: var(--asfalto-card);
+  border: 1px solid var(--asfalto-border);
+  border-top: 3px solid var(--amarillo-vial);
+  border-radius: var(--radius-md);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.85);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 85;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(16px) scale(0.97);
+  transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.chat-window.open {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0) scale(1);
+}
+
+.chat-header {
+  background: var(--asfalto-card-2);
+  padding: 0.85rem 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--asfalto-border);
+}
+
+.chat-title {
+  font-family: var(--f-display);
+  font-weight: 800;
+  font-size: 1.1rem;
+  color: var(--amarillo-vial);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.chat-sub {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.chat-close {
+  background: none;
+  border: 0;
+  color: var(--cromo-mid);
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 4px 8px;
+  min-height: 40px;
+  display: grid;
+  place-items: center;
+  touch-action: manipulation;
+}
+
+.chat-close:hover {
+  color: var(--rojo-freno);
+}
+
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0.9rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  background: var(--asfalto-bg);
+}
+
+.chat-msg {
+  max-width: 88%;
+  padding: 0.65rem 0.9rem;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  animation: msg-in 0.25s ease both;
+}
+
+@keyframes msg-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.chat-msg.bot {
+  background: var(--asfalto-card);
+  border: 1px solid var(--asfalto-border);
+  border-bottom-left-radius: 3px;
+  align-self: flex-start;
+  color: var(--text-main);
+}
+
+.chat-msg.user {
+  background: var(--amarillo-vial);
+  color: #0b0f14;
+  font-weight: 600;
+  border-bottom-right-radius: 3px;
+  align-self: flex-end;
+}
+
+.typing {
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.typing i {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--amarillo-vial);
+  animation: typing-dot 1s infinite ease-in-out;
+}
+
+.typing i:nth-child(2) { animation-delay: 0.15s; }
+.typing i:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes typing-dot {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+  30% { transform: translateY(-4px); opacity: 1; }
+}
+
+.typing-label {
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  margin-left: 0.35rem;
+}
+
+.chat-chips {
+  display: flex;
+  gap: 0.35rem;
+  padding: 0.5rem 0.75rem;
+  overflow-x: auto;
+  border-top: 1px solid var(--asfalto-border);
+  background: var(--asfalto-card);
+  -webkit-overflow-scrolling: touch;
+}
+
+.chip {
+  flex-shrink: 0;
+  font-family: var(--f-body);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid var(--asfalto-border);
+  background: var(--asfalto-card-2);
+  color: var(--cromo-mid);
+  cursor: pointer;
+  min-height: 32px;
+  touch-action: manipulation;
+  transition: all 0.2s ease;
+}
+
+.chip:hover {
+  border-color: var(--amarillo-vial);
+  color: var(--amarillo-vial);
+}
+
+.chat-input-row {
+  display: flex;
+  gap: 0.45rem;
+  padding: 0.7rem;
+  border-top: 1px solid var(--asfalto-border);
+  background: var(--asfalto-card-2);
+}
+
+.chat-input-row input {
+  flex: 1;
+  background: var(--asfalto-bg);
+  border: 1px solid var(--asfalto-border);
+  border-radius: 999px;
+  padding: 0.55rem 1rem;
+  color: var(--text-main);
+  font-family: var(--f-body);
+  font-size: 0.9rem;
+}
+
+.chat-input-row input:focus {
+  outline: none;
+  border-color: var(--amarillo-vial);
+}
+
+.chat-send {
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--amarillo-vial);
+  color: #0b0f14;
+  font-size: 1rem;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  touch-action: manipulation;
+  transition: transform 0.2s ease;
+}
+
+.chat-send:hover {
+  transform: scale(1.08);
+}
+
+/* ---------- 16. Botón Volver Arriba & Footer ---------- */
+.to-top {
+  position: fixed;
+  right: clamp(1rem, 3vw, 1.5rem);
+  bottom: 1.5rem;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--asfalto-card-2);
+  border: 1.5px solid var(--amarillo-vial);
+  color: var(--amarillo-vial);
+  font-size: 1.2rem;
+  font-weight: 800;
+  display: grid;
+  place-items: center;
+  box-shadow: var(--shadow-card);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(10px);
+  touch-action: manipulation;
+  transition: all var(--transition);
+  z-index: 75;
+}
+
+.to-top.visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.to-top:hover {
+  background: var(--amarillo-vial);
+  color: #000;
+}
+
+.site-footer {
+  background: #05080c;
+  border-top: 1px solid var(--asfalto-border);
+  padding-block: clamp(3rem, 6vw, 4rem) 2rem;
+  width: 100%;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 2fr;
+  gap: var(--gap);
+  margin-bottom: 2.5rem;
+  width: 100%;
+}
+
+.footer-brand {
+  font-family: var(--f-display);
+  font-size: clamp(1.5rem, 3vw, 1.8rem);
+  font-weight: 900;
+  color: var(--cromo-light);
+  margin-bottom: 0.4rem;
+}
+
+.footer-brand span {
+  color: var(--amarillo-vial);
+}
+
+.footer-desc {
+  color: var(--text-muted);
+  font-size: 0.92rem;
+  max-width: 32ch;
+}
+
+.footer-col h4 {
+  font-size: 1.05rem;
+  color: var(--amarillo-vial);
+  margin-bottom: 0.8rem;
+}
+
+.footer-links {
+  list-style: none;
+  display: grid;
+  gap: 0.45rem;
+  font-size: 0.9rem;
+}
+
+.footer-links a {
+  color: var(--text-muted);
+}
+
+.footer-links a:hover {
+  color: var(--amarillo-vial);
+}
+
+.footer-easter-egg-box {
+  background: var(--asfalto-card);
+  border: 1px solid var(--asfalto-border);
+  padding: 0.9rem 1.1rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.82rem;
+}
+
+.footer-easter-egg-box strong {
+  color: var(--amarillo-vial);
+  display: block;
+  margin-bottom: 0.3rem;
+}
+
+.footer-easter-egg-box kbd {
+  background: #1e293b;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: var(--f-mono);
+}
+
+.footer-bottom-bar {
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--asfalto-border);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+  font-size: 0.82rem;
+  color: var(--text-dim);
+  width: 100%;
+}
+
+/* ---------- 17. Animaciones Reveal ---------- */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.reveal.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ---------- 18. MEDIA QUERIES 100% RESPONSIVE ---------- */
+
+/* Pantallas Medianas / Tablet Horizontal (hasta 1024px) */
+@media (max-width: 1024px) {
+  .hero-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .routes-grid { grid-template-columns: 1fr; }
+  .comp-selectors-bar { grid-template-columns: 1fr; }
+  .comp-vs-badge { margin-inline: auto; }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+  .multimedia-container { grid-template-columns: 1fr; }
+}
+
+/* Tablets Verticales (hasta 768px) */
+@media (max-width: 768px) {
+  .grid-2 { grid-template-columns: 1fr; }
+  .cards-grid { grid-template-columns: 1fr; }
+  .dash-gauges-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .comp-cards-dual { grid-template-columns: 1fr; }
+  .modal-grid-sections { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr; }
+
+  /* Menú Hamburguesa Móvil */
+  .nav-toggle { display: flex; }
+  .nav-links {
+    position: absolute;
+    top: 68px;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    background: #080c10;
+    border-bottom: 2px solid var(--amarillo-vial);
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s ease;
+    box-shadow: 0 16px 30px rgba(0, 0, 0, 0.8);
+  }
+  .nav-links.open { max-height: 480px; }
+  .nav-links li { border-top: 1px solid var(--asfalto-border); }
+  .nav-links a {
+    display: block;
+    padding: 0.9rem 1.4rem;
+  }
+  .nav-links a::after { display: none; }
+}
+
+/* Móviles (hasta 600px) */
+@media (max-width: 600px) {
+  .hero-actions { flex-direction: column; width: 100%; }
+  .hero-actions .btn { width: 100%; }
+  .dash-controls-bar { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .soundboard-grid { grid-template-columns: 1fr; }
+  .route-metrics-grid { grid-template-columns: 1fr; }
+  .video-tabs-bar { flex-direction: column; }
+
+  .chat-window {
+    right: 0.5rem;
+    bottom: 4.8rem;
+    width: calc(100vw - 1rem);
+    height: min(520px, calc(100vh - 6rem));
+  }
+
+  .game-board {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.4rem;
+  }
+
+  .mcard {
+    aspect-ratio: 1 / 1.35;
+  }
+
+  .showcase-hud {
+    top: 0.5rem;
+    left: 0.5rem;
+  }
+
+  .btn-showcase-play {
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+  }
+
+  .showcase-yt-badge {
+    bottom: 0.5rem;
+    right: 0.5rem;
+    padding: 0.3rem 0.65rem;
+    font-size: 0.75rem;
+  }
+}
+
+/* ============================================================
+   19. ESTILOS: DESAFÍO DE LA LÍNEA (JUEGO DE CONDUCCIÓN 2D)
+   ============================================================ */
+.runner-selector-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  margin-bottom: 1.2rem;
+}
+
+.runner-selector-label {
+  font-family: var(--f-display);
+  font-weight: 800;
+  font-size: 0.95rem;
+  color: var(--amarillo-vial);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.runner-selector-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  justify-content: center;
+}
+
+.truck-select-btn {
+  background: var(--asfalto-card-2);
+  border: 1px solid var(--asfalto-border);
+  color: var(--text-muted);
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 0.45rem 0.85rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: all var(--transition);
+}
+
+.truck-select-btn:hover {
+  color: var(--cromo-light);
+  border-color: var(--cromo-dark);
+}
+
+.truck-select-btn.active {
+  background: var(--amarillo-vial);
+  color: #0c0f14;
+  border-color: var(--amarillo-vial);
+  font-weight: 800;
+  box-shadow: 0 0 12px var(--amarillo-glow);
+}
+
+.runner-hud-bar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 0.6rem;
+  background: rgba(12, 17, 24, 0.95);
+  border: 1px solid var(--asfalto-border);
+  border-radius: var(--radius-sm);
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  max-width: 680px;
+  margin-inline: auto;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+}
+
+.runner-hud-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.hud-mini-label {
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: var(--text-dim);
+  letter-spacing: 0.05em;
+}
+
+.runner-hud-item strong {
+  font-family: var(--f-mono);
+  font-size: 0.95rem;
+  color: var(--cromo-light);
+}
+
+.runner-stage-box {
+  position: relative;
+  max-width: 680px;
+  margin-inline: auto;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 2px solid var(--asfalto-border);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.75);
+  background: #0c150c;
+  display: flex;
+  justify-content: center;
+}
+
+#gameCanvas {
+  display: block;
+  width: 100%;
+  max-width: 680px;
+  height: auto;
+  aspect-ratio: 640 / 520;
+}
+
+.runner-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(8, 12, 16, 0.88);
+  backdrop-filter: blur(8px);
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+  z-index: 10;
+}
+
+.runner-modal-card {
+  background: var(--asfalto-card);
+  border: 2px solid var(--amarillo-vial);
+  border-radius: var(--radius-md);
+  padding: 2rem 1.5rem;
+  text-align: center;
+  max-width: 440px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.8);
+}
+
+.runner-modal-icon {
+  font-size: 3rem;
+  display: block;
+  margin-bottom: 0.6rem;
+}
+
+.runner-modal-card h3 {
+  font-family: var(--f-display);
+  font-size: clamp(1.4rem, 2.5vw, 1.8rem);
+  color: var(--amarillo-vial);
+  margin-bottom: 0.6rem;
+}
+
+.runner-modal-card p {
+  font-size: 0.92rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin-bottom: 1.4rem;
+}
+
+.runner-touch-controls {
+  max-width: 680px;
+  margin-inline: auto;
+  margin-top: 0.8rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  justify-content: space-between;
+}
+
+.touch-steer-group,
+.touch-action-group {
+  display: flex;
+  gap: 0.45rem;
+  flex: 1;
+}
+
+.runner-touch-btn {
+  flex: 1;
+  background: var(--asfalto-card);
+  border: 1px solid var(--asfalto-border);
+  color: var(--cromo-light);
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-size: 0.9rem;
+  padding: 0.75rem 0.5rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  touch-action: manipulation;
+  user-select: none;
+  min-height: 48px;
+  transition: all 0.1s ease;
+}
+
+.runner-touch-btn:active {
+  transform: scale(0.95);
+  background: var(--asfalto-card-2);
+}
+
+.btn-action-gas {
+  background: #0284c7;
+  color: #fff;
+  border-color: #0284c7;
+}
+
+.btn-action-jake {
+  background: #065f46;
+  color: var(--verde-torque);
+  border-color: var(--verde-torque);
+}
+
+.btn-action-horn {
+  background: #d97706;
+  color: #fff;
+  border-color: #d97706;
+}
+
+/* Móviles Pequeños (hasta 400px) */
+@media (max-width: 400px) {
+  .hero-stats { grid-template-columns: 1fr; }
+  .dash-controls-bar { grid-template-columns: 1fr; }
+  .dash-gauges-row { grid-template-columns: 1fr; }
+  .gauge-bezel { width: min(140px, 80vw); }
+}
+
+/* Reducción de Movimiento */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+  .reveal { opacity: 1; transform: none; }
+  #heroCanvas { display: none; }
+}
