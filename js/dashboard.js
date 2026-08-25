@@ -1,11 +1,18 @@
 /* ============================================================
-   COLOMBIA TRUCKS — Simulador de Tablero & Motor de Audio Real
-   Tablero interactivo con gauges analógicos/digitales y síntesis
-   acústica de alta fidelidad para motores diésel de 15L,
-   frenos de motor Jake Brake, cajas Fuller y cornetas neumáticas.
+   COLOMBIA TRUCKS — Simulador de Tablero & Clúster Heavy Duty
+   Síntesis Acústica Diésel de Alta Fidelidad (Web Audio API)
+   - Motor 15L Cummins X15 / Caterpillar C15 con combustión real
+   - Secuencia de arranque con barrido de agujas (Sweep Check)
+   - Freno de motor Jake Brake con descompresión de 3 etapas
+   - Corneta neumática doble Hadley & Grover
+   - Soplido de turbo spool presurizando a 35 PSI
+   - Cajas Eaton Fuller de 18 velocidades sincronizadas
    ============================================================ */
 
 (function initDashboardSimulator() {
+  "use strict";
+
+  // Elementos del DOM
   const ignitionBtn = document.getElementById("dashIgnition");
   const throttleBtn = document.getElementById("dashThrottle");
   const jakeBtn = document.getElementById("dashJake");
@@ -33,6 +40,7 @@
   let isRunning = false;
   let isThrottling = false;
   let isJakeActive = false;
+  let isSweepChecking = false;
 
   let currentRpm = 0;
   let targetRpm = 0;
@@ -40,7 +48,8 @@
   let targetSpeed = 0;
   let currentTurbo = 0;
   let targetTurbo = 0;
-  let currentAir = 120;
+  let currentAir1 = 120;
+  let currentAir2 = 118;
   let currentGear = "N";
 
   // Web Audio API Synthesizer
@@ -49,6 +58,7 @@
   let engineOsc1 = null;
   let engineOsc2 = null;
   let engineOscSub = null;
+  let engineNoiseNode = null;
   let engineFilter = null;
   let turboOsc = null;
   let turboGain = null;
@@ -59,16 +69,23 @@
       const AudioContext = window.AudioContext || window.webkitAudioContext;
       audioCtx = new AudioContext();
     } catch (e) {
-      console.warn("Web Audio API no soportado.", e);
+      console.warn("Web Audio API no disponible.", e);
     }
   }
 
+  /* ============================================================
+     1. MOTOR DIÉSEL CONTINUO (RALENTÍ & ACELERACIÓN REAL)
+     ============================================================ */
   function startEngineSound() {
-    if (!audioCtx) initAudio();
+    initAudio();
     if (!audioCtx) return;
     if (audioCtx.state === "suspended") audioCtx.resume();
 
-    // Osciladores armónicos para emular el bloque de 6 cilindros y 15L
+    stopEngineSound();
+
+    const t = audioCtx.currentTime;
+
+    // 1. Osciladores armónicos (Cilindros diésel)
     engineOsc1 = audioCtx.createOscillator();
     engineOsc2 = audioCtx.createOscillator();
     engineOscSub = audioCtx.createOscillator();
@@ -79,116 +96,146 @@
     engineOsc2.type = "triangle";
     engineOscSub.type = "sine";
 
-    engineOsc1.frequency.setValueAtTime(32, audioCtx.currentTime); // Frecuencia fundamental a 650 RPM
-    engineOsc2.frequency.setValueAtTime(64, audioCtx.currentTime);
-    engineOscSub.frequency.setValueAtTime(24, audioCtx.currentTime); // Sub-bajo acústico de escape
+    engineOsc1.frequency.setValueAtTime(32, t);
+    engineOsc2.frequency.setValueAtTime(64, t);
+    engineOscSub.frequency.setValueAtTime(22, t);
 
     engineFilter.type = "lowpass";
-    engineFilter.frequency.setValueAtTime(260, audioCtx.currentTime);
-    engineFilter.Q.setValueAtTime(3.5, audioCtx.currentTime);
+    engineFilter.frequency.setValueAtTime(260, t);
+    engineFilter.Q.setValueAtTime(4.0, t);
 
-    engineGain.gain.setValueAtTime(0.01, audioCtx.currentTime);
-    engineGain.gain.exponentialRampToValueAtTime(0.2, audioCtx.currentTime + 0.4);
+    // 2. Ruido blanco filtrado para pulsos de combustión e inyección
+    const bufferSize = audioCtx.sampleRate * 2;
+    const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+    const output = noiseBuffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      output[i] = (Math.random() * 2 - 1) * 0.3;
+    }
 
+    engineNoiseNode = audioCtx.createBufferSource();
+    engineNoiseNode.buffer = noiseBuffer;
+    engineNoiseNode.loop = true;
+
+    const noiseFilter = audioCtx.createBiquadFilter();
+    noiseFilter.type = "bandpass";
+    noiseFilter.frequency.setValueAtTime(140, t);
+    noiseFilter.Q.setValueAtTime(2.5, t);
+
+    const noiseGain = audioCtx.createGain();
+    noiseGain.gain.setValueAtTime(0.08, t);
+
+    engineNoiseNode.connect(noiseFilter);
+    noiseFilter.connect(noiseGain);
+    noiseGain.connect(engineFilter);
+
+    // Conectar osciladores
     engineOsc1.connect(engineFilter);
     engineOsc2.connect(engineFilter);
     engineOscSub.connect(engineFilter);
     engineFilter.connect(engineGain);
     engineGain.connect(audioCtx.destination);
 
-    engineOsc1.start();
-    engineOsc2.start();
-    engineOscSub.start();
+    engineGain.gain.setValueAtTime(0.01, t);
+    engineGain.gain.exponentialRampToValueAtTime(0.22, t + 0.5);
 
-    // Silbido del Turbo
+    engineOsc1.start(t);
+    engineOsc2.start(t);
+    engineOscSub.start(t);
+    engineNoiseNode.start(t);
+
+    // 3. Silbido continuo del Turbo
     turboOsc = audioCtx.createOscillator();
     turboGain = audioCtx.createGain();
     const turboFilter = audioCtx.createBiquadFilter();
 
     turboOsc.type = "sine";
-    turboOsc.frequency.setValueAtTime(950, audioCtx.currentTime);
+    turboOsc.frequency.setValueAtTime(950, t);
 
     turboFilter.type = "bandpass";
-    turboFilter.frequency.setValueAtTime(1300, audioCtx.currentTime);
-    turboFilter.Q.setValueAtTime(6, audioCtx.currentTime);
+    turboFilter.frequency.setValueAtTime(1400, t);
+    turboFilter.Q.setValueAtTime(6.5, t);
 
-    turboGain.gain.setValueAtTime(0.001, audioCtx.currentTime);
+    turboGain.gain.setValueAtTime(0.002, t);
 
     turboOsc.connect(turboFilter);
     turboFilter.connect(turboGain);
     turboGain.connect(audioCtx.destination);
-    turboOsc.start();
+    turboOsc.start(t);
   }
 
   function stopEngineSound() {
     if (!audioCtx || !engineGain) return;
     try {
-      engineGain.gain.setTargetAtTime(0, audioCtx.currentTime, 0.15);
-      if (turboGain) turboGain.gain.setTargetAtTime(0, audioCtx.currentTime, 0.15);
+      const t = audioCtx.currentTime;
+      engineGain.gain.setTargetAtTime(0, t, 0.12);
+      if (turboGain) turboGain.gain.setTargetAtTime(0, t, 0.12);
       setTimeout(() => {
-        if (engineOsc1) { engineOsc1.stop(); engineOsc1.disconnect(); engineOsc1 = null; }
-        if (engineOsc2) { engineOsc2.stop(); engineOsc2.disconnect(); engineOsc2 = null; }
-        if (engineOscSub) { engineOscSub.stop(); engineOscSub.disconnect(); engineOscSub = null; }
-        if (turboOsc) { turboOsc.stop(); turboOsc.disconnect(); turboOsc = null; }
+        if (engineOsc1) { try { engineOsc1.stop(); engineOsc1.disconnect(); } catch(e){} engineOsc1 = null; }
+        if (engineOsc2) { try { engineOsc2.stop(); engineOsc2.disconnect(); } catch(e){} engineOsc2 = null; }
+        if (engineOscSub) { try { engineOscSub.stop(); engineOscSub.disconnect(); } catch(e){} engineOscSub = null; }
+        if (engineNoiseNode) { try { engineNoiseNode.stop(); engineNoiseNode.disconnect(); } catch(e){} engineNoiseNode = null; }
+        if (turboOsc) { try { turboOsc.stop(); turboOsc.disconnect(); } catch(e){} turboOsc = null; }
       }, 250);
     } catch (e) {}
   }
 
   function updateEngineSound(rpm, turboPsi) {
     if (!audioCtx || !engineOsc1 || !isRunning) return;
+    const t = audioCtx.currentTime;
     const norm = Math.max(0, Math.min(1, (rpm - 600) / 1600));
-    const baseFreq = 30 + norm * 60;
-    engineOsc1.frequency.setTargetAtTime(baseFreq, audioCtx.currentTime, 0.08);
-    engineOsc2.frequency.setTargetAtTime(baseFreq * 2, audioCtx.currentTime, 0.08);
-    if (engineOscSub) engineOscSub.frequency.setTargetAtTime(baseFreq * 0.75, audioCtx.currentTime, 0.08);
-    engineFilter.frequency.setTargetAtTime(240 + norm * 400, audioCtx.currentTime, 0.08);
+    const baseFreq = 30 + norm * 65;
+
+    engineOsc1.frequency.setTargetAtTime(baseFreq, t, 0.06);
+    engineOsc2.frequency.setTargetAtTime(baseFreq * 2, t, 0.06);
+    if (engineOscSub) engineOscSub.frequency.setTargetAtTime(baseFreq * 0.75, t, 0.06);
+    if (engineFilter) engineFilter.frequency.setTargetAtTime(240 + norm * 450, t, 0.06);
 
     if (turboGain && turboOsc) {
-      const turboFreq = 850 + (turboPsi / 35) * 1900;
-      const turboVol = Math.max(0.001, (turboPsi / 35) * 0.09);
-      turboOsc.frequency.setTargetAtTime(turboFreq, audioCtx.currentTime, 0.1);
-      turboGain.gain.setTargetAtTime(turboVol, audioCtx.currentTime, 0.1);
+      const turboFreq = 850 + (turboPsi / 35) * 2100;
+      const turboVol = Math.max(0.001, (turboPsi / 35) * 0.11);
+      turboOsc.frequency.setTargetAtTime(turboFreq, t, 0.08);
+      turboGain.gain.setTargetAtTime(turboVol, t, 0.08);
     }
   }
 
   /* ============================================================
-     SONIDOS INDEPENDIENTES PARA EL SOUNDBOARD REAL
+     2. EFECTOS DE AUDIO INDEPENDIENTES (SOUNDBOARD & ATRIBUTOS)
      ============================================================ */
 
-  // 1. Sonido de Arranque y Ralentí Diésel
-  window.playIdleSound = function() {
+  // A. Sonido de Arranque y Encendido de Motor (Starter Crank + Catch)
+  window.playStarterSound = function() {
     initAudio();
     if (!audioCtx) return;
     if (audioCtx.state === "suspended") audioCtx.resume();
 
-    // Sonido de arranque inicial (Motor de partida + ignición)
-    const starterOsc = audioCtx.createOscillator();
-    const starterGain = audioCtx.createGain();
-    starterOsc.type = "sawtooth";
-    starterOsc.frequency.setValueAtTime(20, audioCtx.currentTime);
-    starterOsc.frequency.linearRampToValueAtTime(36, audioCtx.currentTime + 0.6);
+    const t = audioCtx.currentTime;
 
-    const filter = audioCtx.createBiquadFilter();
-    filter.type = "lowpass";
-    filter.frequency.value = 220;
+    // Ráfaga de motor de arranque eléctrico
+    for (let i = 0; i < 4; i++) {
+      const crankTime = t + i * 0.18;
+      const crankOsc = audioCtx.createOscillator();
+      const crankGain = audioCtx.createGain();
+      crankOsc.type = "sawtooth";
+      crankOsc.frequency.setValueAtTime(24 + i * 4, crankTime);
+      crankGain.gain.setValueAtTime(0.2, crankTime);
+      crankGain.gain.exponentialRampToValueAtTime(0.01, crankTime + 0.15);
 
-    starterGain.gain.setValueAtTime(0.01, audioCtx.currentTime);
-    starterGain.gain.linearRampToValueAtTime(0.25, audioCtx.currentTime + 0.3);
-    starterGain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 2.2);
+      crankOsc.connect(crankGain);
+      crankGain.connect(audioCtx.destination);
+      crankOsc.start(crankTime);
+      crankOsc.stop(crankTime + 0.16);
+    }
 
-    starterOsc.connect(filter);
-    filter.connect(starterGain);
-    starterGain.connect(audioCtx.destination);
-
-    starterOsc.start();
-    starterOsc.stop(audioCtx.currentTime + 2.3);
-
+    // Rugido de encendido en t + 0.75s
     setTimeout(() => {
-      if (window.playAirPurgeSound) window.playAirPurgeSound();
-    }, 1200);
+      if (window.playRevSound) window.playRevSound();
+      if (window.playAirPurgeSound) {
+        setTimeout(window.playAirPurgeSound, 1100);
+      }
+    }, 750);
   };
 
-  // 2. Sonido de Aceleración y Soplido de Turbo
+  // B. Sonido de Aceleración a Fondo & Turbo Boost
   window.playRevSound = function() {
     initAudio();
     if (!audioCtx) return;
@@ -201,27 +248,27 @@
     const turboGainNode = audioCtx.createGain();
 
     osc.type = "sawtooth";
-    osc.frequency.setValueAtTime(35, t);
-    osc.frequency.linearRampToValueAtTime(80, t + 0.8);
-    osc.frequency.linearRampToValueAtTime(32, t + 2.0);
+    osc.frequency.setValueAtTime(32, t);
+    osc.frequency.linearRampToValueAtTime(95, t + 0.75);
+    osc.frequency.linearRampToValueAtTime(32, t + 2.1);
 
     turbo.type = "sine";
-    turbo.frequency.setValueAtTime(800, t);
-    turbo.frequency.linearRampToValueAtTime(2400, t + 0.8);
-    turbo.frequency.linearRampToValueAtTime(700, t + 2.2);
+    turbo.frequency.setValueAtTime(750, t);
+    turbo.frequency.linearRampToValueAtTime(2600, t + 0.75);
+    turbo.frequency.linearRampToValueAtTime(650, t + 2.2);
 
     const filter = audioCtx.createBiquadFilter();
     filter.type = "lowpass";
-    filter.frequency.setValueAtTime(240, t);
-    filter.frequency.linearRampToValueAtTime(650, t + 0.8);
-    filter.frequency.linearRampToValueAtTime(220, t + 2.2);
+    filter.frequency.setValueAtTime(260, t);
+    filter.frequency.linearRampToValueAtTime(750, t + 0.75);
+    filter.frequency.linearRampToValueAtTime(240, t + 2.2);
 
     gain.gain.setValueAtTime(0.05, t);
-    gain.gain.linearRampToValueAtTime(0.24, t + 0.8);
+    gain.gain.linearRampToValueAtTime(0.3, t + 0.75);
     gain.gain.exponentialRampToValueAtTime(0.001, t + 2.3);
 
     turboGainNode.gain.setValueAtTime(0.001, t);
-    turboGainNode.gain.linearRampToValueAtTime(0.08, t + 0.8);
+    turboGainNode.gain.linearRampToValueAtTime(0.12, t + 0.75);
     turboGainNode.gain.exponentialRampToValueAtTime(0.001, t + 2.2);
 
     osc.connect(filter);
@@ -237,73 +284,85 @@
     turbo.stop(t + 2.4);
   };
 
-  // 3. Sonido de Freno de Motor Jake Brake (Traqueteo de descompresión en descenso)
+  // C. Sonido de Freno de Motor Jake Brake (Traqueteo de Descompresión)
   window.playJakeBrakeSound = function() {
     initAudio();
     if (!audioCtx) return;
     if (audioCtx.state === "suspended") audioCtx.resume();
 
     const t = audioCtx.currentTime;
-    // Ráfaga de pulsos de compresión (12 disparos rápidos de cilindro)
-    for (let i = 0; i < 16; i++) {
-      const pulseTime = t + i * 0.08;
+    // Ráfaga de pulsos de compresión (18 disparos rápidos de cilindro)
+    for (let i = 0; i < 20; i++) {
+      const pulseTime = t + i * 0.065;
       const osc = audioCtx.createOscillator();
       const gain = audioCtx.createGain();
+      const filter = audioCtx.createBiquadFilter();
 
       osc.type = "square";
-      osc.frequency.setValueAtTime(55 - i * 1.5, pulseTime);
+      osc.frequency.setValueAtTime(55 - i * 0.6, pulseTime);
 
-      const filter = audioCtx.createBiquadFilter();
-      filter.type = "lowpass";
-      filter.frequency.value = 380;
-      filter.Q.value = 3;
+      filter.type = "bandpass";
+      filter.frequency.setValueAtTime(320 + (i % 2) * 80, pulseTime);
+      filter.Q.setValueAtTime(3.5, pulseTime);
 
-      gain.gain.setValueAtTime(0.22, pulseTime);
-      gain.gain.exponentialRampToValueAtTime(0.01, pulseTime + 0.07);
+      gain.gain.setValueAtTime(0.28, pulseTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, pulseTime + 0.055);
 
       osc.connect(filter);
       filter.connect(gain);
       gain.connect(audioCtx.destination);
 
       osc.start(pulseTime);
-      osc.stop(pulseTime + 0.075);
+      osc.stop(pulseTime + 0.06);
     }
   };
 
-  // 4. Sonido de Corneta de Aire Neumática Doble Trompeta (Hadley)
+  // D. Sonido de Corneta Neumática Doble Hadley / Grover
   window.playAirHornSound = function() {
     initAudio();
     if (!audioCtx) return;
     if (audioCtx.state === "suspended") audioCtx.resume();
 
     const t = audioCtx.currentTime;
-    const freqs = [311.13, 369.99, 466.16, 622.25];
-    freqs.forEach((f, idx) => {
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      const filter = audioCtx.createBiquadFilter();
+    // Tonos dobles de trompeta neumática (220 Hz y 277 Hz - Armonía F#)
+    const horn1 = audioCtx.createOscillator();
+    const horn2 = audioCtx.createOscillator();
+    const hornSub = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    const filter = audioCtx.createBiquadFilter();
 
-      osc.type = "sawtooth";
-      osc.frequency.value = f;
+    horn1.type = "sawtooth";
+    horn2.type = "sawtooth";
+    hornSub.type = "triangle";
 
-      filter.type = "lowpass";
-      filter.frequency.value = 1600;
+    horn1.frequency.setValueAtTime(220, t);
+    horn2.frequency.setValueAtTime(277.18, t);
+    hornSub.frequency.setValueAtTime(110, t);
 
-      const vol = idx === 0 || idx === 1 ? 0.11 : 0.06;
-      gain.gain.setValueAtTime(0.01, t);
-      gain.gain.linearRampToValueAtTime(vol, t + 0.04);
-      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.95);
+    filter.type = "bandpass";
+    filter.frequency.setValueAtTime(650, t);
+    filter.Q.setValueAtTime(1.8, t);
 
-      osc.connect(filter);
-      filter.connect(gain);
-      gain.connect(audioCtx.destination);
+    gain.gain.setValueAtTime(0.01, t);
+    gain.gain.linearRampToValueAtTime(0.35, t + 0.05);
+    gain.gain.setValueAtTime(0.35, t + 0.45);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.65);
 
-      osc.start(t);
-      osc.stop(t + 1.0);
-    });
+    horn1.connect(filter);
+    horn2.connect(filter);
+    hornSub.connect(filter);
+    filter.connect(gain);
+    gain.connect(audioCtx.destination);
+
+    horn1.start(t);
+    horn2.start(t);
+    hornSub.start(t);
+    horn1.stop(t + 0.7);
+    horn2.stop(t + 0.7);
+    hornSub.stop(t + 0.7);
   };
 
-  // 5. Sonido de Purga de Aire Neumático (Válvula secadora Bendix)
+  // E. Sonido de Purga de Aire Secador (Psssshhh)
   window.playAirPurgeSound = function() {
     initAudio();
     if (!audioCtx) return;
@@ -321,11 +380,11 @@
 
     const filter = audioCtx.createBiquadFilter();
     filter.type = "bandpass";
-    filter.frequency.value = 1900;
-    filter.Q.value = 2.0;
+    filter.frequency.value = 1950;
+    filter.Q.value = 2.2;
 
     const gain = audioCtx.createGain();
-    gain.gain.setValueAtTime(0.24, audioCtx.currentTime);
+    gain.gain.setValueAtTime(0.26, audioCtx.currentTime);
     gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.42);
 
     noise.connect(filter);
@@ -334,48 +393,24 @@
     noise.start();
   };
 
-  // 6. Sonido de Pase de Caja Eaton Fuller 18 Vel (Engrane + Switch de Rango)
-  window.playShiftSound = function() {
-    initAudio();
-    if (!audioCtx) return;
-    if (audioCtx.state === "suspended") audioCtx.resume();
-
-    const t = audioCtx.currentTime;
-    // Golpe de engranaje mecánico (Click-clack metálico)
-    const osc = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
-    osc.type = "triangle";
-    osc.frequency.setValueAtTime(160, t);
-    osc.frequency.exponentialRampToValueAtTime(40, t + 0.12);
-
-    gain.gain.setValueAtTime(0.25, t);
-    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.15);
-
-    osc.connect(gain);
-    gain.connect(audioCtx.destination);
-    osc.start(t);
-    osc.stop(t + 0.16);
-
-    // Soplido breve de aire del selector neumático
-    setTimeout(() => {
-      if (window.playAirPurgeSound) window.playAirPurgeSound();
-    }, 140);
-  };
-
   /* ============================================================
-     CICLO DE ANIMACIÓN DE GAUGES DEL TABLERO
+     3. CICLO DE ANIMACIÓN DE GAUGES CON FÍSICA & VIBRACIÓN
      ============================================================ */
   function updateGauges() {
+    // Suavizado dinámico de agujas
     currentRpm += (targetRpm - currentRpm) * 0.12;
     currentSpeed += (targetSpeed - currentSpeed) * 0.08;
     currentTurbo += (targetTurbo - currentTurbo) * 0.15;
 
+    // Vibración sutil de ralentí en las agujas cuando el motor está encendido
+    const idleShake = isRunning ? (Math.sin(Date.now() * 0.03) * 0.8) : 0;
+
     // Tacómetro: 0 a 2500 RPM -> -120deg a +120deg
-    const rpmAngle = -120 + (currentRpm / 2500) * 240;
+    const rpmAngle = -120 + (currentRpm / 2500) * 240 + idleShake;
     if (rpmNeedle) rpmNeedle.style.transform = `rotate(${rpmAngle}deg)`;
 
     // Velocímetro: 0 a 140 km/h -> -120deg a +120deg
-    const speedAngle = -120 + (currentSpeed / 140) * 240;
+    const speedAngle = -120 + (currentSpeed / 140) * 240 + (idleShake * 0.4);
     if (speedNeedle) speedNeedle.style.transform = `rotate(${speedAngle}deg)`;
 
     // Turbo: 0 a 40 PSI -> -110deg a +110deg
@@ -383,9 +418,10 @@
     if (turboNeedle) turboNeedle.style.transform = `rotate(${turboAngle}deg)`;
 
     // Aire: 0 a 150 PSI -> -100deg a +100deg
-    const airAngle = -100 + (currentAir / 150) * 200;
-    if (airNeedle1) airNeedle1.style.transform = `rotate(${airAngle}deg)`;
-    if (airNeedle2) airNeedle2.style.transform = `rotate(${airAngle - 2}deg)`;
+    const airAngle1 = -100 + (currentAir1 / 150) * 200;
+    const airAngle2 = -100 + (currentAir2 / 150) * 200;
+    if (airNeedle1) airNeedle1.style.transform = `rotate(${airAngle1}deg)`;
+    if (airNeedle2) airNeedle2.style.transform = `rotate(${airAngle2}deg)`;
 
     // Textos digitales
     if (rpmValueEl) rpmValueEl.textContent = Math.round(currentRpm);
@@ -393,13 +429,40 @@
     if (gearValueEl) gearValueEl.textContent = currentGear;
     if (turboValueEl) turboValueEl.textContent = Math.round(currentTurbo);
 
-    if (isRunning) {
+    if (isRunning && !isSweepChecking) {
       updateEngineSound(currentRpm, currentTurbo);
     }
 
     requestAnimationFrame(updateGauges);
   }
 
+  // Barrido de agujas inicial (Sweep Check)
+  function runSweepCheck() {
+    isSweepChecking = true;
+    targetRpm = 2400;
+    targetSpeed = 135;
+    targetTurbo = 38;
+    targetSpeed = 130;
+
+    setTimeout(() => {
+      if (isRunning) {
+        targetRpm = 650;
+        targetSpeed = 0;
+        targetTurbo = 2;
+        currentGear = "N";
+      } else {
+        targetRpm = 0;
+        targetSpeed = 0;
+        targetTurbo = 0;
+        currentGear = "P";
+      }
+      isSweepChecking = false;
+    }, 700);
+  }
+
+  /* ============================================================
+     4. CONTROLES DEL TABLERO (ARRANQUE, ACELERADOR, JAKE, CORNETA)
+     ============================================================ */
   function toggleIgnition() {
     initAudio();
     isRunning = !isRunning;
@@ -412,13 +475,16 @@
       if (ledAirLow) ledAirLow.classList.add("active");
       if (ledDiffLock) ledDiffLock.classList.add("active");
 
-      targetRpm = 650;
-      targetSpeed = 0;
-      targetTurbo = 2;
-      currentAir = 120;
-      currentGear = "N";
+      // Barrido de agujas al encender
+      runSweepCheck();
 
+      // Iniciar sonido diésel
       startEngineSound();
+
+      // Notificar al favicon animado
+      if (window.AnimatedFavicon && window.AnimatedFavicon.setEngineActive) {
+        window.AnimatedFavicon.setEngineActive(true);
+      }
 
       setTimeout(() => {
         if (ledCheckEngine) ledCheckEngine.classList.remove("active");
@@ -436,15 +502,21 @@
       if (ledJake) ledJake.classList.remove("active");
       if (ledCheckEngine) ledCheckEngine.classList.remove("active");
       stopEngineSound();
+
+      if (window.AnimatedFavicon && window.AnimatedFavicon.setEngineActive) {
+        window.AnimatedFavicon.setEngineActive(false);
+      }
     }
+  }
+
   function startThrottle() {
     if (!isRunning) {
       toggleIgnition();
     }
     isThrottling = true;
     throttleBtn.classList.add("active");
-    targetRpm = 1950;
-    targetSpeed = 75;
+    targetRpm = 2050;
+    targetSpeed = 82;
     targetTurbo = 35;
     currentGear = "7H";
 
@@ -463,7 +535,7 @@
     if (window.playAirPurgeSound) window.playAirPurgeSound();
   }
 
-  // Event Listeners
+  // Event Listeners del Tablero
   ignitionBtn.addEventListener("click", toggleIgnition);
 
   throttleBtn.addEventListener("mousedown", startThrottle);
@@ -478,13 +550,13 @@
       isJakeActive = true;
       if (ledJake) ledJake.classList.add("active");
       jakeBtn.classList.add("active");
-      targetRpm = Math.max(800, currentRpm - 500);
+      targetRpm = Math.max(900, currentRpm - 500);
       window.playJakeBrakeSound();
       setTimeout(() => {
         isJakeActive = false;
         if (ledJake) ledJake.classList.remove("active");
         jakeBtn.classList.remove("active");
-      }, 1300);
+      }, 1400);
     });
   }
 
@@ -492,9 +564,10 @@
     hornBtn.addEventListener("click", () => {
       hornBtn.classList.add("active");
       window.playAirHornSound();
-      setTimeout(() => hornBtn.classList.remove("active"), 400);
+      setTimeout(() => hornBtn.classList.remove("active"), 450);
     });
   }
 
+  // Iniciar ciclo de actualización de agujas
   updateGauges();
 })();
