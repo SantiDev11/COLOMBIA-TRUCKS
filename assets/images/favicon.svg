@@ -1,0 +1,121 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <!-- Gradiente de Fondo Oscuro -->
+    <radialGradient id="bgGrad" cx="50%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#152232"/>
+      <stop offset="100%" stop-color="#06090e"/>
+    </radialGradient>
+
+    <!-- Gradiente Oro Vial -->
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffd54f"/>
+      <stop offset="50%" stop-color="#ffb703"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+
+    <!-- Gradiente Cromo Pulido -->
+    <linearGradient id="chromeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#64748b"/>
+      <stop offset="30%" stop-color="#f8fafc"/>
+      <stop offset="50%" stop-color="#94a3b8"/>
+      <stop offset="70%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#475569"/>
+    </linearGradient>
+
+    <!-- Gradiente Faros LED -->
+    <radialGradient id="headlightGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="40%" stop-color="#ffea00"/>
+      <stop offset="100%" stop-color="#ff9100"/>
+    </radialGradient>
+
+    <!-- Filtro de Resplandor Neón -->
+    <filter id="neonGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+
+    <style>
+      @keyframes pulseGlow {
+        0%, 100% { opacity: 0.85; filter: drop-shadow(0 0 4px #ffb703); }
+        50% { opacity: 1; filter: drop-shadow(0 0 12px #ffea00); }
+      }
+      @keyframes roofBlink {
+        0%, 100% { fill: #ffb703; opacity: 0.9; }
+        50% { fill: #ffffff; opacity: 1; filter: drop-shadow(0 0 6px #ffea00); }
+      }
+      .headlight { animation: pulseGlow 2s ease-in-out infinite; }
+      .cab-light { animation: roofBlink 1.5s ease-in-out infinite; }
+      .cab-light:nth-child(2) { animation-delay: 0.2s; }
+      .cab-light:nth-child(3) { animation-delay: 0.4s; }
+    </style>
+  </defs>
+
+  <!-- 1. Fondo Circular del Icono -->
+  <rect width="128" height="128" rx="28" fill="url(#bgGrad)" stroke="url(#goldGrad)" stroke-width="3.5"/>
+
+  <!-- 2. Chimeneas de Escape Cromadas Laterales -->
+  <rect x="22" y="16" width="6" height="42" rx="3" fill="url(#chromeGrad)" stroke="#1e293b" stroke-width="1"/>
+  <path d="M22 16 Q20 10 16 8" stroke="url(#chromeGrad)" stroke-width="4" stroke-linecap="round" fill="none"/>
+  
+  <rect x="100" y="16" width="6" height="42" rx="3" fill="url(#chromeGrad)" stroke="#1e293b" stroke-width="1"/>
+  <path d="M106 16 Q108 10 112 8" stroke="url(#chromeGrad)" stroke-width="4" stroke-linecap="round" fill="none"/>
+
+  <!-- 3. Techo / Cabina del Tractocamión -->
+  <path d="M34 42 L42 22 L86 22 L94 42 Z" fill="#0f172a" stroke="#334155" stroke-width="1.5"/>
+
+  <!-- 4. Luces de Gálibo en el Techo (5 Luces Ámbar) -->
+  <circle class="cab-light" cx="48" cy="20" r="2.5" fill="#ffb703"/>
+  <circle class="cab-light" cx="56" cy="18.5" r="2.8" fill="#ffb703"/>
+  <circle class="cab-light" cx="64" cy="18" r="3" fill="#ffb703"/>
+  <circle class="cab-light" cx="72" cy="18.5" r="2.8" fill="#ffb703"/>
+  <circle class="cab-light" cx="80" cy="20" r="2.5" fill="#ffb703"/>
+
+  <!-- 5. Parabrisas Doble con Reflejo -->
+  <path d="M37 42 L44 26 L62 26 L62 42 Z" fill="#1e293b" opacity="0.95"/>
+  <path d="M66 42 L66 26 L84 26 L91 42 Z" fill="#1e293b" opacity="0.95"/>
+  <polygon points="45,28 58,28 42,40 39,40" fill="#38bdf8" opacity="0.35"/>
+  <polygon points="69,28 82,28 66,40 66,40" fill="#38bdf8" opacity="0.35"/>
+
+  <!-- 6. Capó / Carrocería Frontal -->
+  <path d="M28 46 L100 46 L96 90 L32 90 Z" fill="#111827" stroke="#1f2937" stroke-width="1.5"/>
+
+  <!-- 7. Parrilla Frontal Cromada Gigante -->
+  <rect x="42" y="48" width="44" height="42" rx="4" fill="#030712" stroke="url(#chromeGrad)" stroke-width="3"/>
+  
+  <!-- Barras Verticales de la Parrilla -->
+  <line x1="48" y1="52" x2="48" y2="86" stroke="url(#chromeGrad)" stroke-width="2"/>
+  <line x1="53" y1="50" x2="53" y2="88" stroke="url(#chromeGrad)" stroke-width="2"/>
+  <line x1="58" y1="50" x2="58" y2="88" stroke="url(#chromeGrad)" stroke-width="2"/>
+  <line x1="64" y1="50" x2="64" y2="88" stroke="url(#chromeGrad)" stroke-width="2.5"/>
+  <line x1="70" y1="50" x2="70" y2="88" stroke="url(#chromeGrad)" stroke-width="2"/>
+  <line x1="75" y1="50" x2="75" y2="88" stroke="url(#chromeGrad)" stroke-width="2"/>
+  <line x1="80" y1="52" x2="80" y2="86" stroke="url(#chromeGrad)" stroke-width="2"/>
+
+  <!-- Corona / Emblema Superior de la Parrilla -->
+  <rect x="54" y="47" width="20" height="4" rx="1.5" fill="url(#goldGrad)"/>
+
+  <!-- 8. Faros Delanteros LED de Alta Potencia con Halo -->
+  <!-- Faro Izquierdo -->
+  <rect x="29" y="60" width="10" height="18" rx="3" fill="#0f172a" stroke="url(#chromeGrad)" stroke-width="1.5"/>
+  <circle class="headlight" cx="34" cy="66" r="4" fill="url(#headlightGlow)"/>
+  <circle cx="34" cy="74" r="2.5" fill="#ffb703"/>
+
+  <!-- Faro Derecho -->
+  <rect x="89" y="60" width="10" height="18" rx="3" fill="#0f172a" stroke="url(#chromeGrad)" stroke-width="1.5"/>
+  <circle class="headlight" cx="94" cy="66" r="4" fill="url(#headlightGlow)"/>
+  <circle cx="94" cy="74" r="2.5" fill="#ffb703"/>
+
+  <!-- 9. Defensa / Parachoques Cromado Inferior Heavy Duty -->
+  <path d="M20 92 L108 92 L104 110 L24 110 Z" fill="url(#chromeGrad)" stroke="#334155" stroke-width="1"/>
+  
+  <!-- Detalle Central de la Defensa con Bandera de Colombia -->
+  <rect x="50" y="96" width="28" height="9" rx="2" fill="#0b0f17" stroke="#1f2937" stroke-width="1"/>
+  <rect x="52" y="97.5" width="24" height="2" fill="#ffd700"/>
+  <rect x="52" y="99.5" width="24" height="1.5" fill="#003087"/>
+  <rect x="52" y="101" width="24" height="1.5" fill="#c8102e"/>
+
+  <!-- Luces Antiniebla en la Defensa -->
+  <circle cx="28" cy="101" r="3" fill="#ffb703"/>
+  <circle cx="100" cy="101" r="3" fill="#ffb703"/>
+</svg>
