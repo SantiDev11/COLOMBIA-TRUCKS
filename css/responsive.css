@@ -3113,3 +3113,357 @@ a:hover {
   .reveal { opacity: 1; transform: none; }
   #heroCanvas { display: none; }
 }
+
+/* ============================================================
+   17. PANTALLA INTRODUCCIÓN / PRELOADER CINEMATOGRÁFICO
+   ============================================================ */
+.intro-splash-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  background: #06090e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(1rem, 3vw, 2rem);
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.7s;
+}
+
+.intro-splash-screen.dismissed {
+  opacity: 0;
+  visibility: hidden;
+  transform: scale(1.04) translateY(-10px);
+  pointer-events: none;
+}
+
+.intro-splash-bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background: 
+    radial-gradient(circle at 50% 30%, rgba(255, 183, 3, 0.12) 0%, transparent 65%),
+    linear-gradient(180deg, #05080c 0%, #090e15 100%);
+}
+
+.intro-road-perspective {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(800px, 100vw);
+  height: 45vh;
+  background: linear-gradient(180deg, transparent 0%, rgba(15, 23, 34, 0.7) 100%);
+  clip-path: polygon(42% 0%, 58% 0%, 100% 100%, 0% 100%);
+  border-bottom: 3px solid var(--amarillo-vial);
+  opacity: 0.6;
+}
+
+.intro-road-line {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 6px;
+  height: 100%;
+  background: repeating-linear-gradient(
+    180deg,
+    var(--amarillo-vial) 0px,
+    var(--amarillo-vial) 35px,
+    transparent 35px,
+    transparent 70px
+  );
+  animation: introRoadMove 1.2s linear infinite;
+}
+
+@keyframes introRoadMove {
+  from { background-position: 0 0; }
+  to { background-position: 0 70px; }
+}
+
+.intro-splash-content {
+  position: relative;
+  z-index: 2;
+  width: min(580px, 100%);
+  background: rgba(11, 16, 23, 0.94);
+  border: 1.5px solid rgba(255, 183, 3, 0.35);
+  border-top: 4px solid var(--amarillo-vial);
+  border-radius: 20px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.9), 0 0 35px rgba(255, 183, 3, 0.2);
+  padding: clamp(1.4rem, 4vw, 2.2rem);
+  text-align: center;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  animation: introCardAppear 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes introCardAppear {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.intro-brand-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(15, 23, 34, 0.9);
+  border: 1px solid rgba(255, 183, 3, 0.4);
+  padding: 0.35rem 0.9rem;
+  border-radius: 999px;
+  font-family: var(--f-display);
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: #ffffff;
+  margin-bottom: 0.8rem;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+}
+
+.intro-brand-badge span span {
+  color: var(--amarillo-vial);
+}
+
+.intro-title {
+  font-family: var(--f-display);
+  font-size: clamp(1.5rem, 3.5vw, 2.1rem);
+  font-weight: 900;
+  color: #ffffff;
+  letter-spacing: 0.03em;
+  line-height: 1.15;
+  margin-bottom: 0.35rem;
+}
+
+.intro-title span {
+  color: var(--amarillo-vial);
+}
+
+.intro-subtitle {
+  font-size: clamp(0.82rem, 2vw, 0.92rem);
+  color: var(--text-muted);
+  line-height: 1.45;
+  margin-bottom: 1.4rem;
+}
+
+/* Caja de Diagnóstico ECM */
+.intro-diagnostics-box {
+  background: rgba(8, 12, 16, 0.85);
+  border: 1px solid var(--asfalto-border);
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1.4rem;
+  text-align: left;
+}
+
+.intro-diag-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--f-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-dim);
+  letter-spacing: 0.04em;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  margin-bottom: 0.75rem;
+}
+
+.intro-diag-led {
+  color: var(--amarillo-vial);
+  animation: introLedBlink 0.8s infinite alternate;
+  margin-right: 4px;
+}
+
+@keyframes introLedBlink {
+  from { opacity: 0.3; }
+  to { opacity: 1; }
+}
+
+.intro-diag-status {
+  color: var(--amarillo-vial);
+  font-weight: 800;
+}
+
+.intro-diag-items {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+  margin-bottom: 0.9rem;
+}
+
+.intro-diag-item {
+  background: rgba(21, 32, 46, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 0.5rem 0.65rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  opacity: 0.45;
+  transform: translateY(4px);
+  transition: all 0.35s ease;
+}
+
+.intro-diag-item.active {
+  opacity: 1;
+  transform: translateY(0);
+  border-color: rgba(255, 183, 3, 0.35);
+  background: rgba(21, 32, 46, 0.95);
+}
+
+.intro-diag-item.active .diag-val {
+  color: var(--verde-torque);
+}
+
+.diag-icon {
+  font-size: 0.9rem;
+  margin-bottom: 1px;
+}
+
+.diag-label {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.diag-val {
+  font-family: var(--f-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-dim);
+}
+
+/* Barra de Progreso */
+.intro-progress-wrapper {
+  height: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+}
+
+.intro-progress-bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #ffb703 0%, #10b981 100%);
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(255, 183, 3, 0.6);
+  transition: width 0.15s ease-out;
+}
+
+.intro-progress-info {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 0.45rem;
+  font-family: var(--f-mono);
+}
+
+.intro-progress-percent {
+  color: var(--amarillo-vial);
+  font-weight: 800;
+}
+
+/* Botones de Acción */
+.intro-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.btn-intro-enter {
+  width: 100%;
+  background: linear-gradient(135deg, #ffb703 0%, #d97706 100%);
+  color: #080c10;
+  border: 0;
+  border-radius: 12px;
+  padding: 0.9rem 1.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(255, 183, 3, 0.45), 0 0 20px rgba(255, 183, 3, 0.25);
+  touch-action: manipulation;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  outline: none;
+}
+
+.btn-intro-enter:hover {
+  transform: translateY(-2px) scale(1.01);
+  box-shadow: 0 12px 32px rgba(255, 183, 3, 0.65), 0 0 30px rgba(255, 183, 3, 0.4);
+}
+
+.btn-intro-enter:active {
+  transform: scale(0.98);
+}
+
+.btn-intro-icon {
+  font-size: 1.5rem;
+}
+
+.btn-intro-text {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  line-height: 1.2;
+}
+
+.btn-intro-text strong {
+  font-family: var(--f-display);
+  font-size: 1.15rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  color: #080c10;
+}
+
+.btn-intro-text small {
+  font-size: 0.76rem;
+  color: rgba(8, 12, 16, 0.85);
+  font-weight: 600;
+}
+
+.btn-intro-arrow {
+  font-size: 1.3rem;
+  font-weight: 800;
+  transition: transform 0.2s ease;
+}
+
+.btn-intro-enter:hover .btn-intro-arrow {
+  transform: translateX(4px);
+}
+
+.btn-intro-skip {
+  background: transparent;
+  border: 1px dashed var(--asfalto-border);
+  color: var(--text-muted);
+  font-family: var(--f-display);
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-intro-skip:hover {
+  color: #ffffff;
+  border-color: var(--amarillo-vial);
+  background: rgba(255, 183, 3, 0.06);
+}
+
+@media (max-width: 480px) {
+  .intro-diag-items {
+    grid-template-columns: 1fr;
+  }
+}

@@ -14,9 +14,110 @@
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&family=Outfit:wght@700;800;900&display=swap" rel="stylesheet">
 
   <link href="css/responsive.css" rel="stylesheet" type="text/css">
+  <link href="css/accessibility.css" rel="stylesheet" type="text/css">
 </head>
 
 <body>
+
+<!-- ============ PANTALLA INTRODUCCIÓN / PRELOADER INICIAL ============ -->
+<div class="intro-splash-screen" id="introSplash" role="dialog" aria-modal="true" aria-label="Pantalla de inicio y diagnóstico de carretera">
+  <div class="intro-splash-bg">
+    <div class="intro-road-perspective">
+      <div class="intro-road-line"></div>
+    </div>
+  </div>
+
+  <div class="intro-splash-content">
+    <div class="intro-brand-badge">
+      <span>🇨🇴 COLOMBIA<span>TRUCKS</span></span>
+    </div>
+
+    <h1 class="intro-title">SISTEMA DE TELEMETRÍA Y POTENCIA PESADA</h1>
+    <p class="intro-subtitle">Plataforma interactiva de tractocamiones, rutas de montaña y simulador de cabina</p>
+
+    <!-- Caja de Diagnósticos ECM -->
+    <div class="intro-diagnostics-box">
+      <div class="intro-diag-header">
+        <span><span class="intro-diag-led">●</span> DIAGNÓSTICO ECM INICIAL</span>
+        <span class="intro-diag-status" id="introDiagStatus">CALIBRANDO...</span>
+      </div>
+
+      <div class="intro-diag-items">
+        <div class="intro-diag-item active" id="diagItem1">
+          <span class="diag-icon">⚡</span>
+          <span class="diag-label">ECM Cummins X15 / DD15</span>
+          <span class="diag-val">ONLINE (24V)</span>
+        </div>
+        <div class="intro-diag-item" id="diagItem2">
+          <span class="diag-icon">💨</span>
+          <span class="diag-label">Presión Neumática Frenos</span>
+          <span class="diag-val">120 PSI · OK</span>
+        </div>
+        <div class="intro-diag-item" id="diagItem3">
+          <span class="diag-icon">⚙️</span>
+          <span class="diag-label">Caja Fuller 18 Velocidades</span>
+          <span class="diag-val">SINCRONIZADA</span>
+        </div>
+        <div class="intro-diag-item" id="diagItem4">
+          <span class="diag-icon">🛣️</span>
+          <span class="diag-label">Rutas de Montaña & Andes</span>
+          <span class="diag-val">LISTO</span>
+        </div>
+      </div>
+
+      <!-- Barra de Progreso Digital -->
+      <div class="intro-progress-wrapper">
+        <div class="intro-progress-bar" id="introProgressBar"></div>
+      </div>
+      <div class="intro-progress-info">
+        <span id="introProgressLabel">Inicializando sistemas de carretera...</span>
+        <span class="intro-progress-percent" id="introProgressPercent">0%</span>
+      </div>
+    </div>
+
+    <!-- Botones de Acción de Entrada -->
+    <div class="intro-actions">
+      <button class="btn-intro-enter" id="btnIntroEnter" aria-label="Encender motor y entrar a Colombia Trucks">
+        <span class="btn-intro-icon">🔑</span>
+        <span class="btn-intro-text">
+          <strong>ENCENDER MOTOR Y ENTRAR</strong>
+          <small>Iniciar plataforma interactiva</small>
+        </span>
+        <span class="btn-intro-arrow">➔</span>
+      </button>
+
+      <button class="btn-intro-skip" id="btnIntroSkip" aria-label="Saltar introducción y entrar directamente">
+        ⚡ Saltar Intro (Entrar Directo)
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ ENLACES DE SALTO ACCESIBLES (SKIP LINKS) ============ -->
+<div class="skip-links-bar" role="navigation" aria-label="Enlaces de salto rápido">
+  <a class="skip-link" href="#camiones"><span>🚛</span> Saltar a Camiones</a>
+  <a class="skip-link" href="#tablero"><span>🎛️</span> Saltar a Tablero</a>
+  <a class="skip-link" href="#rutas"><span>🛣️</span> Saltar a Rutas</a>
+  <a class="skip-link" href="#comparador"><span>⚙️</span> Saltar a Comparador</a>
+  <a class="skip-link" href="#juego"><span>🎮</span> Saltar a Juego</a>
+</div>
+
+<!-- Regla de Lectura Visual (Reading Ruler) -->
+<div class="a11y-reading-guide" id="a11yReadingGuide" aria-hidden="true" hidden></div>
+
+<!-- Live Announcer para Lectores de Pantalla -->
+<div id="a11yLiveAnnouncer" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
+
+<!-- Barra flotante de reproducción TTS -->
+<div class="a11y-tts-floating-bar" id="a11yTtsFloatingBar" aria-hidden="true" hidden>
+  <div class="a11y-tts-floating-text">
+    <span>🎙️ Leyendo:</span> <strong id="a11yTtsFloatingText">...</strong>
+  </div>
+  <button class="a11y-tts-mini-btn" id="a11yTtsStopBtn" aria-label="Detener lectura de voz">⏹️</button>
+</div>
+
+<!-- Toast de Notificaciones de Accesibilidad -->
+<div class="a11y-toast" id="a11yToast" role="status" aria-live="polite"></div>
 
 <!-- ============ NAVEGACIÓN PRINCIPAL ============ -->
 <header class="site-header" id="inicio">
@@ -210,8 +311,8 @@
           <button class="dash-btn btn-ignition" id="dashIgnition">
             <span>⚡</span> ARRANCAR MOTOR
           </button>
-          <button class="dash-btn btn-throttle" id="dashThrottle" title="Mantén presionado para acelerar con el rugido real de YouTube">
-            <span>🚀</span> ACELERAR (AUDIO YOUTUBE)
+          <button class="dash-btn btn-throttle" id="dashThrottle" title="Mantén presionado para acelerar y presurizar el turbo boost">
+            <span>🚀</span> ACELERAR (TURBO BOOST)
           </button>
           <button class="dash-btn btn-jake" id="dashJake">
             <span>🛑</span> JAKE BRAKE
@@ -219,22 +320,11 @@
           <button class="dash-btn btn-horn" id="dashHorn">
             <span>📢</span> CORNETA
           </button>
-
-          <!-- Reproductor de Audio Real de YouTube (Oculto) -->
-          <iframe
-            id="dashThrottleAudioFrame"
-            src="https://www.youtube-nocookie.com/embed/sHmaSbjKC0E?enablejsapi=1&autoplay=0&loop=1&playlist=sHmaSbjKC0E"
-            allow="autoplay; encrypted-media"
-            style="position: absolute; width: 1px; height: 1px; opacity: 0.01; pointer-events: none; border: 0;"
-            tabindex="-1"
-            title="Audio Acelerador YouTube"></iframe>
         </div>
 
         <div class="dash-audio-source-badge">
-          <span>🔊 Sonido Real de Aceleración sincronizado con:</span>
-          <a href="https://www.youtube.com/shorts/sHmaSbjKC0E" target="_blank" rel="noopener noreferrer">
-            YouTube Shorts — Rugido Cummins Turbo Spool ↗
-          </a>
+          <span>🔊 Síntesis Acústica Diésel de Alta Fidelidad:</span>
+          <strong>Cummins X15 600HP · Turbo Spool 35 PSI · Jake Brake 3 Niveles</strong>
         </div>
       </div>
 
@@ -355,29 +445,57 @@
       <!-- Centro de Video de Tractocamiones Reales -->
       <div class="multimedia-video-box reveal" style="max-width: 960px; margin-inline: auto;">
         <div class="video-tabs-bar">
-          <button class="video-tab-btn active" data-truckid="t800" data-videoid="LRoLOA4wJtA" data-yturl="https://www.youtube.com/watch?v=LRoLOA4wJtA" data-title="🟡 Kenworth T800 — El Rey de la Montaña" data-desc="Recorrido real por las cordilleras colombianas con capó inclinado a 45°, motor Cummins X15 de 600 HP y caja Fuller de 18 velocidades." aria-label="Ver video de Kenworth T800">
+          <button class="video-tab-btn active" data-truckid="t800" data-videoid="LRoLOA4wJtA" data-yturl="https://www.youtube.com/watch?v=LRoLOA4wJtA" data-title="🟡 Kenworth T800 — El Rey de la Montaña" data-desc="Recorrido real por las cordilleras colombianas con capó inclinado a 45°, motor Cummins X15 de 600 HP y caja Fuller de 18 velocidades." data-img="assets/images/kenworth-t800.jpg" aria-label="Ver video de Kenworth T800">
             🟡 Kenworth T800
           </button>
-          <button class="video-tab-btn" data-truckid="international-9400i" data-videoid="NEMLdPHc1Uw" data-yturl="https://www.youtube.com/watch?v=NEMLdPHc1Uw" data-title="🟤 International Eagle 9400i — El Águila" data-desc="Elegancia clásica, cabina espaciosa Pro-Sleeper, tablero de nogal y tradición de transporte pesado en Colombia." aria-label="Ver video de International Eagle 9400i">
+          <button class="video-tab-btn" data-truckid="international-9400i" data-videoid="NEMLdPHc1Uw" data-yturl="https://www.youtube.com/watch?v=NEMLdPHc1Uw" data-title="🟤 International Eagle 9400i — El Águila" data-desc="Elegancia clásica, cabina espaciosa Pro-Sleeper, tablero de nogal y tradición de transporte pesado en Colombia." data-img="assets/images/international-9400i.jpg" aria-label="Ver video de International Eagle 9400i">
             🟤 Eagle 9400i
           </button>
-          <button class="video-tab-btn" data-truckid="w900" data-videoid="zYr7IGq_57g" data-yturl="https://www.youtube.com/watch?v=zYr7IGq_57g" data-title="⚪ Kenworth W900 — El Ícono Clásico" data-desc="Trompa cuadrada extendida de 130 pulgadas BBC, filtros exteriores cromados, chimeneas gigantes de escape vertical y rugido de cromo." aria-label="Ver video de Kenworth W900">
+          <button class="video-tab-btn" data-truckid="w900" data-videoid="zYr7IGq_57g" data-yturl="https://www.youtube.com/watch?v=zYr7IGq_57g" data-title="⚪ Kenworth W900 — El Ícono Clásico" data-desc="Trompa cuadrada extendida de 130 pulgadas BBC, filtros exteriores cromados, chimeneas gigantes de escape vertical y rugido de cromo." data-img="assets/images/kenworth-w900.jpg" aria-label="Ver video de Kenworth W900">
             ⚪ Kenworth W900
           </button>
-          <button class="video-tab-btn" data-truckid="t680" data-videoid="x70mVvo12VU" data-yturl="https://www.youtube.com/watch?v=x70mVvo12VU" data-title="🔴 Kenworth T680 — Vanguardia Aerodinámica" data-desc="Ingeniería de vanguardia, cabina digital de 15 pulgadas, radar de seguridad y máxima eficiencia diésel en carretera colombiana." aria-label="Ver video de Kenworth T680">
+          <button class="video-tab-btn" data-truckid="t680" data-videoid="x70mVvo12VU" data-yturl="https://www.youtube.com/watch?v=x70mVvo12VU" data-title="🔴 Kenworth T680 — Vanguardia Aerodinámica" data-desc="Ingeniería de vanguardia, cabina digital de 15 pulgadas, radar de seguridad y máxima eficiencia diésel en carretera colombiana." data-img="assets/images/kenworth-t680.jpg" aria-label="Ver video de Kenworth T680">
             🔴 Kenworth T680
           </button>
         </div>
 
-        <!-- Visor de Video YouTube HD -->
+        <!-- Visor de Video YouTube HD con Smart Facade (Protección Anti-Cookie Error) -->
         <div class="video-frame-box" id="videoFrameContainer">
-          <iframe
-            id="truckVideoPlayer"
-            src="https://www.youtube-nocookie.com/embed/LRoLOA4wJtA?rel=0&modestbranding=1"
-            title="Tractomulas Colombianas en Carretera"
-            loading="lazy"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            allowfullscreen></iframe>
+          <div class="showcase-frame-box" id="videoPosterBox">
+            <img src="assets/images/kenworth-t800.jpg" alt="Kenworth T800 en carretera" class="showcase-bg-img" id="videoPosterImg">
+            <div class="showcase-overlay"></div>
+            
+            <div class="showcase-hud">
+              <div class="hud-item">
+                <span class="hud-label">CALIDAD</span>
+                <span class="hud-val">1080p HD</span>
+              </div>
+              <div class="hud-item">
+                <span class="hud-label">ORIGEN</span>
+                <span class="hud-val">COLOMBIA 🇨🇴</span>
+              </div>
+            </div>
+
+            <div class="showcase-center-controls">
+              <button class="btn-showcase-play" id="btnPlayTruckVideo" aria-label="Reproducir video de tractocamión">
+                <span class="play-icon-glow">▶</span>
+                <div class="play-text-box">
+                  <strong>REPRODUCIR VIDEO HD</strong>
+                  <small>Audio & Imagen de Alta Calidad</small>
+                </div>
+              </button>
+            </div>
+          </div>
+
+          <div id="videoIframeWrapper" style="display: none; width: 100%; height: 100%; position: absolute; inset: 0;">
+            <iframe
+              id="truckVideoPlayer"
+              src=""
+              title="Tractomulas Colombianas en Carretera"
+              loading="lazy"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen></iframe>
+          </div>
         </div>
 
         <!-- Pie de Información del Camión Activo -->
@@ -630,6 +748,281 @@
   </form>
 </div>
 
+<!-- ============ BOTÓN FLOTANTE DE ACCESIBILIDAD (FAB) ============ -->
+<button class="a11y-fab" id="a11yFab" aria-label="Abrir panel de opciones de accesibilidad (Alt + A)" aria-expanded="false" aria-controls="a11yBackdrop">
+  <span class="a11y-fab-icon" aria-hidden="true">♿</span>
+  <span class="a11y-active-badge" id="a11yActiveBadge" aria-hidden="true">0</span>
+  <span class="a11y-fab-tooltip">Accesibilidad (Alt + A)</span>
+</button>
+
+<!-- ============ HUB / MODAL DE ACCESIBILIDAD ============ -->
+<div class="a11y-backdrop" id="a11yBackdrop" role="dialog" aria-modal="true" aria-labelledby="a11yModalTitle" hidden>
+  <div class="a11y-modal-card">
+    <!-- Header -->
+    <div class="a11y-modal-header">
+      <div class="a11y-modal-title-group">
+        <span class="a11y-modal-badge" aria-hidden="true">♿</span>
+        <div>
+          <h2 class="a11y-modal-title" id="a11yModalTitle">CENTRO DE ACCESIBILIDAD</h2>
+          <p class="a11y-modal-sub">Personaliza tu experiencia de navegación (WCAG 2.2)</p>
+        </div>
+      </div>
+      <button class="a11y-close-btn" id="a11yCloseBtn" aria-label="Cerrar panel de accesibilidad (Escape)">×</button>
+    </div>
+
+    <!-- Pestañas de Navegación -->
+    <div class="a11y-tabs-nav" role="tablist" aria-label="Categorías de accesibilidad">
+      <button class="a11y-tab-btn active" role="tab" aria-selected="true" aria-controls="tabPane-vision" data-tab="vision">👁️ Visión</button>
+      <button class="a11y-tab-btn" role="tab" aria-selected="false" aria-controls="tabPane-audio" data-tab="audio">🔊 Voz & Audio</button>
+      <button class="a11y-tab-btn" role="tab" aria-selected="false" aria-controls="tabPane-ayudas" data-tab="ayudas">🎯 Ayudas</button>
+      <button class="a11y-tab-btn" role="tab" aria-selected="false" aria-controls="tabPane-atajos" data-tab="atajos">⌨️ Atajos</button>
+    </div>
+
+    <!-- Contenido de Pestañas -->
+    <div class="a11y-modal-body">
+      <!-- PESTAÑA 1: VISIÓN -->
+      <div class="a11y-tab-pane active" id="tabPane-vision" role="tabpanel">
+        <!-- Control: Escala de Fuente -->
+        <div class="a11y-control-card">
+          <div class="a11y-control-header">
+            <div class="a11y-control-info">
+              <div class="a11y-control-label"><span>🔍</span> Tamaño de Texto</div>
+              <div class="a11y-control-desc">Ajusta el tamaño de la tipografía de forma proporcional.</div>
+            </div>
+            <span class="a11y-font-display" id="a11yFontDisplay">100%</span>
+          </div>
+          <div class="a11y-font-scale-ctrl">
+            <button class="a11y-scale-btn" id="a11yFontDec" aria-label="Reducir tamaño de texto">A- Reducir</button>
+            <button class="a11y-scale-btn" id="a11yFontReset" aria-label="Restablecer tamaño normal">100% Normal</button>
+            <button class="a11y-scale-btn" id="a11yFontInc" aria-label="Aumentar tamaño de texto">A+ Aumentar</button>
+          </div>
+          <div class="a11y-preset-pills">
+            <button class="a11y-pill-btn" data-scale="0.85">85%</button>
+            <button class="a11y-pill-btn active" data-scale="1.0">100%</button>
+            <button class="a11y-pill-btn" data-scale="1.15">115%</button>
+            <button class="a11y-pill-btn" data-scale="1.3">130%</button>
+            <button class="a11y-pill-btn" data-scale="1.5">150%</button>
+          </div>
+        </div>
+
+        <!-- Control: Alto Contraste -->
+        <div class="a11y-control-card">
+          <div class="a11y-control-header">
+            <div class="a11y-control-info">
+              <label class="a11y-control-label" for="chkHighContrast"><span>⚡</span> Modo Alto Contraste (AAA)</label>
+              <div class="a11y-control-desc">Fondo negro profundo con texto oro y bordes de alta visibilidad.</div>
+            </div>
+            <label class="a11y-switch">
+              <input type="checkbox" id="chkHighContrast">
+              <span class="a11y-slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Control: Monocromático -->
+        <div class="a11y-control-card">
+          <div class="a11y-control-header">
+            <div class="a11y-control-info">
+              <label class="a11y-control-label" for="chkGrayscale"><span>⚪</span> Modo Monocromático</label>
+              <div class="a11y-control-desc">Convierte la pantalla a escala de grises para reducir fatiga visual.</div>
+            </div>
+            <label class="a11y-switch">
+              <input type="checkbox" id="chkGrayscale">
+              <span class="a11y-slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Control: Inversión de Colores / Daltonismo -->
+        <div class="a11y-control-card">
+          <div class="a11y-control-header">
+            <div class="a11y-control-info">
+              <label class="a11y-control-label" for="chkInvertColors"><span>🎨</span> Invertir Colores</label>
+              <div class="a11y-control-desc">Facilita la lectura a personas con daltonismo o fotofobia.</div>
+            </div>
+            <label class="a11y-switch">
+              <input type="checkbox" id="chkInvertColors">
+              <span class="a11y-slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Control: Tipografía Dislexia -->
+        <div class="a11y-control-card">
+          <div class="a11y-control-header">
+            <div class="a11y-control-info">
+              <label class="a11y-control-label" for="chkDyslexia"><span>📖</span> Tipografía para Dislexia</label>
+              <div class="a11y-control-desc">Aplica una fuente redondeada y estructurada para facilitar la lectura.</div>
+            </div>
+            <label class="a11y-switch">
+              <input type="checkbox" id="chkDyslexia">
+              <span class="a11y-slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Control: Espaciado de Texto -->
+        <div class="a11y-control-card">
+          <div class="a11y-control-header">
+            <div class="a11y-control-info">
+              <label class="a11y-control-label" for="chkSpacedText"><span>📏</span> Espaciado de Texto Mejorado</label>
+              <div class="a11y-control-desc">Aumenta el interlineado y la separación entre letras y palabras.</div>
+            </div>
+            <label class="a11y-switch">
+              <input type="checkbox" id="chkSpacedText">
+              <span class="a11y-slider"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- PESTAÑA 2: VOZ & AUDIO -->
+      <div class="a11y-tab-pane" id="tabPane-audio" role="tabpanel">
+        <!-- Control: Lector de Voz TTS -->
+        <div class="a11y-control-card">
+          <div class="a11y-control-header">
+            <div class="a11y-control-info">
+              <label class="a11y-control-label" for="chkTts"><span>🎙️</span> Lector de Voz Interactivo</label>
+              <div class="a11y-control-desc">Haz clic en cualquier texto o tarjeta para escucharla en voz alta.</div>
+            </div>
+            <label class="a11y-switch">
+              <input type="checkbox" id="chkTts">
+              <span class="a11y-slider"></span>
+            </label>
+          </div>
+
+          <div class="a11y-tts-controls">
+            <div class="a11y-soundwave-indicator" id="a11ySoundwave" aria-hidden="true">
+              <span class="a11y-soundwave-bar"></span>
+              <span class="a11y-soundwave-bar"></span>
+              <span class="a11y-soundwave-bar"></span>
+              <span class="a11y-soundwave-bar"></span>
+            </div>
+
+            <div class="a11y-tts-actions">
+              <button class="a11y-btn-action" id="a11yBtnReadSummary">
+                <span>📢</span> Leer Resumen de la Web
+              </button>
+              <button class="a11y-btn-action a11y-btn-secondary" id="a11yBtnTtsStop">
+                <span>⏹️</span> Detener
+              </button>
+            </div>
+
+            <div class="a11y-voice-rate-row">
+              <span class="a11y-voice-rate-label">Velocidad de Lectura:</span>
+              <div class="a11y-preset-pills" style="margin-top:0; flex:1; max-width:200px;">
+                <button class="a11y-pill-btn a11y-rate-btn" data-rate="0.8">0.8x</button>
+                <button class="a11y-pill-btn a11y-rate-btn active" data-rate="1.0">1.0x</button>
+                <button class="a11y-pill-btn a11y-rate-btn" data-rate="1.25">1.2x</button>
+                <button class="a11y-pill-btn a11y-rate-btn" data-rate="1.5">1.5x</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PESTAÑA 3: AYUDAS VISUALES & MOTORAS -->
+      <div class="a11y-tab-pane" id="tabPane-ayudas" role="tabpanel">
+        <!-- Control: Guía de Lectura -->
+        <div class="a11y-control-card">
+          <div class="a11y-control-header">
+            <div class="a11y-control-info">
+              <label class="a11y-control-label" for="chkReadingGuide"><span>📏</span> Regla Guía de Lectura</label>
+              <div class="a11y-control-desc">Banda horizontal con línea guía que sigue suavemente el ratón.</div>
+            </div>
+            <label class="a11y-switch">
+              <input type="checkbox" id="chkReadingGuide">
+              <span class="a11y-slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Control: Resaltar Enlaces y Botones -->
+        <div class="a11y-control-card">
+          <div class="a11y-control-header">
+            <div class="a11y-control-info">
+              <label class="a11y-control-label" for="chkHighlight"><span>🔗</span> Resaltar Enlaces & Botones</label>
+              <div class="a11y-control-desc">Marca con bordes luminosos y subrayados todos los elementos clickeables.</div>
+            </div>
+            <label class="a11y-switch">
+              <input type="checkbox" id="chkHighlight">
+              <span class="a11y-slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Control: Cursor Gigante -->
+        <div class="a11y-control-card">
+          <div class="a11y-control-header">
+            <div class="a11y-control-info">
+              <label class="a11y-control-label" for="chkBigCursor"><span>🖱️</span> Cursor Gigante de Alta Visibilidad</label>
+              <div class="a11y-control-desc">Agranda el puntero del ratón con un contraste amarillo vial y negro.</div>
+            </div>
+            <label class="a11y-switch">
+              <input type="checkbox" id="chkBigCursor">
+              <span class="a11y-slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Control: Detener Animaciones -->
+        <div class="a11y-control-card">
+          <div class="a11y-control-header">
+            <div class="a11y-control-info">
+              <label class="a11y-control-label" for="chkStopAnim"><span>⏸️</span> Detener Movimiento & Animaciones</label>
+              <div class="a11y-control-desc">Pausa los efectos del canvas, transiciones y rotación de tacómetros.</div>
+            </div>
+            <label class="a11y-switch">
+              <input type="checkbox" id="chkStopAnim">
+              <span class="a11y-slider"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- PESTAÑA 4: ATAJOS DE TECLADO -->
+      <div class="a11y-tab-pane" id="tabPane-atajos" role="tabpanel">
+        <div class="a11y-shortcuts-list">
+          <div class="a11y-shortcut-item">
+            <span>Abrir / Cerrar Panel Accesibilidad</span>
+            <kbd>Alt + A</kbd>
+          </div>
+          <div class="a11y-shortcut-item">
+            <span>Activar / Detener Lector de Voz</span>
+            <kbd>Alt + L</kbd>
+          </div>
+          <div class="a11y-shortcut-item">
+            <span>Activar / Desactivar Regla de Lectura</span>
+            <kbd>Alt + R</kbd>
+          </div>
+          <div class="a11y-shortcut-item">
+            <span>Cerrar Paneles o Silenciar Voz</span>
+            <kbd>Esc</kbd>
+          </div>
+          <div class="a11y-shortcut-item">
+            <span>Navegar Elementos Interactivos</span>
+            <kbd>Tab / Shift+Tab</kbd>
+          </div>
+          <div class="a11y-shortcut-item">
+            <span>Activar Botón / Enlace Enfocado</span>
+            <kbd>Enter / Espacio</kbd>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer del Hub -->
+    <div class="a11y-modal-footer">
+      <button class="a11y-reset-all-btn" id="a11yResetAll">
+        <span>🔄</span> Restablecer Ajustes
+      </button>
+      <span class="a11y-status-pill">
+        <span>●</span> WCAG 2.2 Ready
+      </span>
+    </div>
+  </div>
+</div>
+
 <!-- ============ SCRIPTS DEL PROYECTO ============ -->
 <script src="js/trucks-data.js"></script>
 <script src="js/routes-data.js"></script>
@@ -638,6 +1031,8 @@
 <script src="js/comparator.js"></script>
 <script src="js/truck-runner.js"></script>
 <script src="js/chatbot.js"></script>
+<script src="js/accessibility.js"></script>
+<script src="js/intro-splash.js"></script>
 <script src="js/main.js"></script>
 </body>
 </html>

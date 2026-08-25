@@ -437,21 +437,6 @@
       if (ledCheckEngine) ledCheckEngine.classList.remove("active");
       stopEngineSound();
     }
-  }
-
-  const ytAudioFrame = document.getElementById("dashThrottleAudioFrame");
-
-  function sendYtCommand(func, args = []) {
-    if (ytAudioFrame && ytAudioFrame.contentWindow) {
-      try {
-        ytAudioFrame.contentWindow.postMessage(
-          JSON.stringify({ event: "command", func: func, args: args }),
-          "*"
-        );
-      } catch (e) {}
-    }
-  }
-
   function startThrottle() {
     if (!isRunning) {
       toggleIgnition();
@@ -462,11 +447,6 @@
     targetSpeed = 75;
     targetTurbo = 35;
     currentGear = "7H";
-
-    // Reproducir audio real de YouTube Shorts (sHmaSbjKC0E)
-    sendYtCommand("playVideo");
-    sendYtCommand("unMute");
-    sendYtCommand("setVolume", [100]);
 
     if (window.playRevSound) window.playRevSound();
   }
@@ -480,9 +460,7 @@
     targetTurbo = isRunning ? 2 : 0;
     currentGear = isRunning ? "N" : "P";
 
-    // Pausar audio de YouTube y descargar válvula de alivio
-    sendYtCommand("pauseVideo");
-    window.playAirPurgeSound();
+    if (window.playAirPurgeSound) window.playAirPurgeSound();
   }
 
   // Event Listeners

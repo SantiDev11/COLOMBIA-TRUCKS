@@ -413,18 +413,36 @@ window.addEventListener("keydown", (e) => {
 })();
 
 /* ============================================================
-   4. REPRODUCTOR DE VIDEOS REALES DE TRACTOCAMIONES
+   4. REPRODUCTOR DE VIDEOS REALES DE TRACTOCAMIONES (SMART FACADE)
    ============================================================ */
 (function initVideoPlayer() {
   const tabBtns = document.querySelectorAll(".video-tab-btn");
   const iframe = document.getElementById("truckVideoPlayer");
+  const iframeWrapper = document.getElementById("videoIframeWrapper");
+  const posterBox = document.getElementById("videoPosterBox");
+  const posterImg = document.getElementById("videoPosterImg");
+  const playBtn = document.getElementById("btnPlayTruckVideo");
   const titleEl = document.getElementById("videoCaptionTitle");
   const descEl = document.getElementById("videoCaptionDesc");
   const extLink = document.getElementById("videoExternalLink");
 
-  if (!tabBtns.length || !iframe) return;
+  if (!tabBtns.length) return;
 
-  function selectTruckVideo(btn) {
+  let currentVideoId = "LRoLOA4wJtA";
+  let isPlaying = false;
+
+  function loadActiveVideo() {
+    if (!iframe) return;
+    isPlaying = true;
+    if (posterBox) posterBox.style.display = "none";
+    if (iframeWrapper) iframeWrapper.style.display = "block";
+    
+    // Parámetros estándar de YouTube para evitar errores de cookies de terceros
+    const originParam = window.location.origin && window.location.origin !== "null" ? `&origin=${encodeURIComponent(window.location.origin)}` : "";
+    iframe.src = `https://www.youtube.com/embed/${currentVideoId}?autoplay=1&rel=0&enablejsapi=1${originParam}`;
+  }
+
+  function selectTruckVideo(btn, autoPlay = false) {
     tabBtns.forEach((b) => b.classList.remove("active"));
     btn.classList.add("active");
 
@@ -432,24 +450,38 @@ window.addEventListener("keydown", (e) => {
     const desc = btn.dataset.desc;
     const ytUrl = btn.dataset.yturl;
     const videoId = btn.dataset.videoid;
+    const imgSrc = btn.dataset.img;
 
-    if (iframe && videoId) {
-      iframe.src = `https://www.youtube-nocookie.com/embed/${videoId}?rel=0&autoplay=1&modestbranding=1`;
-    }
+    currentVideoId = videoId;
 
     if (titleEl) titleEl.textContent = title;
     if (descEl) descEl.textContent = desc;
     if (extLink) extLink.href = ytUrl;
+    if (posterImg && imgSrc) posterImg.src = imgSrc;
+
+    if (autoPlay || isPlaying) {
+      loadActiveVideo();
+    } else {
+      if (posterBox) posterBox.style.display = "flex";
+      if (iframeWrapper) iframeWrapper.style.display = "none";
+      if (iframe) iframe.src = "";
+    }
+  }
+
+  if (playBtn) {
+    playBtn.addEventListener("click", () => {
+      loadActiveVideo();
+    });
   }
 
   tabBtns.forEach((btn) => {
-    btn.addEventListener("click", () => selectTruckVideo(btn));
+    btn.addEventListener("click", () => selectTruckVideo(btn, false));
   });
 
   window.playTruckVideo = function(videoId) {
     const matchingBtn = Array.from(tabBtns).find(b => b.dataset.videoid === videoId || b.dataset.truckid === videoId);
     if (matchingBtn) {
-      selectTruckVideo(matchingBtn);
+      selectTruckVideo(matchingBtn, true);
     }
     const sec = document.getElementById("multimedia");
     if (sec) sec.scrollIntoView({ behavior: "smooth" });

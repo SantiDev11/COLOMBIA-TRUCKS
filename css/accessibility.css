@@ -1,0 +1,1081 @@
+/* ============================================================
+   COLOMBIA TRUCKS — Módulo Avanzado de Accesibilidad (A11y)
+   Cumplimiento de estándares WCAG 2.1 / 2.2 (Nivel AA y AAA)
+   - Micro-animaciones fluidas, panel industrial con glassmorphism
+   - Modos de visión (Alto Contraste, Monocromático, Dislexia, Zoom)
+   - Lector de voz sintetizada (TTS) en español con resaltado visual
+   - Regla de lectura visual para TDAH y baja concentración
+   - 100% Responsivo y compatible con todos los navegadores
+   ============================================================ */
+
+/* ---------- 1. Variables Globales de Accesibilidad ---------- */
+:root {
+  --a11y-font-scale: 1;
+  --a11y-line-height-scale: 1;
+  --a11y-letter-spacing: normal;
+  --a11y-word-spacing: normal;
+  --a11y-accent: #ffb703;
+  --a11y-accent-glow: rgba(255, 183, 3, 0.4);
+  --a11y-panel-bg: rgba(11, 16, 23, 0.92);
+  --a11y-panel-border: rgba(255, 183, 3, 0.3);
+  --a11y-card-bg: rgba(21, 32, 46, 0.85);
+  --a11y-card-hover: rgba(28, 41, 58, 0.95);
+  --a11y-spring-transition: 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Factor de escala tipográfica fluida en HTML */
+html {
+  font-size: calc(16px * var(--a11y-font-scale));
+}
+
+/* Utilidad para lectores de pantalla únicamente */
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+/* ---------- 2. Barra de Enlaces de Salto (Skip Links) ---------- */
+.skip-links-bar {
+  position: fixed;
+  top: -120px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 99999;
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.6rem 1rem;
+  background: #080c10;
+  border: 2px solid var(--amarillo-vial);
+  border-radius: 0 0 14px 14px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.9), 0 0 20px var(--a11y-accent-glow);
+  transition: top 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.skip-links-bar:focus-within {
+  top: 0;
+}
+
+.skip-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.5rem 0.9rem;
+  background: #15202e;
+  color: #ffffff;
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 183, 3, 0.4);
+  text-decoration: none;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.skip-link:hover,
+.skip-link:focus-visible {
+  background: var(--amarillo-vial);
+  color: #080c10;
+  outline: none;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(255, 183, 3, 0.5);
+}
+
+/* ---------- 3. Botón Flotante de Accesibilidad (FAB) ---------- */
+.a11y-fab {
+  position: fixed;
+  left: clamp(1rem, 2.5vw, 1.5rem);
+  bottom: clamp(1.5rem, 3vw, 2rem);
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  border: 2px solid var(--amarillo-vial);
+  color: var(--amarillo-vial);
+  cursor: pointer;
+  z-index: 88;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6), 0 0 16px rgba(255, 183, 3, 0.25);
+  touch-action: manipulation;
+  transition: transform var(--a11y-spring-transition), box-shadow var(--a11y-spring-transition), background var(--a11y-spring-transition);
+  outline: none;
+}
+
+.a11y-fab-icon {
+  font-size: 1.7rem;
+  display: grid;
+  place-items: center;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.a11y-fab:hover {
+  transform: scale(1.1) rotate(6deg);
+  background: linear-gradient(135deg, #2a3b50 0%, #152238 100%);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.8), 0 0 28px rgba(255, 183, 3, 0.5);
+}
+
+.a11y-fab:hover .a11y-fab-icon {
+  transform: scale(1.15);
+}
+
+.a11y-fab:active {
+  transform: scale(0.95);
+}
+
+.a11y-fab:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 4px;
+}
+
+/* Anillo de pulso ambiental */
+.a11y-fab::before {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 2px solid var(--amarillo-vial);
+  opacity: 0;
+  animation: a11yPulse 3s infinite;
+  pointer-events: none;
+}
+
+@keyframes a11yPulse {
+  0% {
+    transform: scale(0.92);
+    opacity: 0.8;
+  }
+  60% {
+    transform: scale(1.3);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1.3);
+    opacity: 0;
+  }
+}
+
+/* Badge con contador de ajustes activos */
+.a11y-active-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  border-radius: 10px;
+  background: #ef233c;
+  color: #ffffff;
+  font-family: var(--f-mono);
+  font-size: 0.72rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #080c10;
+  box-shadow: 0 2px 8px rgba(239, 35, 60, 0.6);
+  opacity: 0;
+  transform: scale(0.5);
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.a11y-active-badge.visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Tooltip elegante al posarse */
+.a11y-fab-tooltip {
+  position: absolute;
+  left: calc(100% + 14px);
+  background: #0f1722;
+  color: #f1f5f9;
+  font-family: var(--f-display);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  padding: 0.4rem 0.8rem;
+  border-radius: 8px;
+  border: 1px solid var(--asfalto-border);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7);
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateX(-8px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.a11y-fab:hover .a11y-fab-tooltip {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* ---------- 4. Modal / Hub de Accesibilidad ---------- */
+.a11y-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(4, 7, 10, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  z-index: 99990;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  padding: clamp(0.75rem, 2vw, 1.5rem);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.a11y-backdrop.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.a11y-backdrop[hidden] {
+  display: none !important;
+}
+
+.a11y-modal-card {
+  width: min(460px, calc(100vw - 1.5rem));
+  max-height: min(88vh, 720px);
+  background: var(--a11y-panel-bg);
+  border: 1.5px solid var(--a11y-panel-border);
+  border-top: 4px solid var(--amarillo-vial);
+  border-radius: 20px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.95), 0 0 32px rgba(255, 183, 3, 0.2);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transform: translateY(30px) scale(0.96);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.a11y-backdrop.open .a11y-modal-card {
+  transform: translateY(0) scale(1);
+}
+
+/* Encabezado del Hub */
+.a11y-modal-header {
+  background: rgba(15, 23, 34, 0.95);
+  padding: 1.1rem 1.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--asfalto-border);
+}
+
+.a11y-modal-title-group {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.a11y-modal-badge {
+  font-size: 1.4rem;
+}
+
+.a11y-modal-title {
+  font-family: var(--f-display);
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--amarillo-vial);
+  margin: 0;
+  line-height: 1.1;
+  letter-spacing: 0.03em;
+}
+
+.a11y-modal-sub {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.a11y-close-btn {
+  background: transparent;
+  border: 1px solid var(--asfalto-border);
+  color: var(--cromo-light);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 1.3rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.a11y-close-btn:hover {
+  background: #ef233c;
+  color: #ffffff;
+  border-color: #ef233c;
+  transform: rotate(90deg);
+}
+
+/* Barra de pestañas / categorías */
+.a11y-tabs-nav {
+  display: flex;
+  background: rgba(8, 12, 16, 0.9);
+  padding: 0.4rem;
+  gap: 0.35rem;
+  border-bottom: 1px solid var(--asfalto-border);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.a11y-tabs-nav::-webkit-scrollbar {
+  display: none;
+}
+
+.a11y-tab-btn {
+  flex: 1;
+  min-width: fit-content;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.55rem 0.75rem;
+  background: transparent;
+  border: 0;
+  border-radius: 10px;
+  color: var(--text-muted);
+  font-family: var(--f-display);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.25s ease;
+}
+
+.a11y-tab-btn:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.a11y-tab-btn.active {
+  background: var(--amarillo-vial);
+  color: #080c10;
+  box-shadow: 0 4px 12px rgba(255, 183, 3, 0.35);
+}
+
+/* Cuerpo con scroll personalizado */
+.a11y-modal-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.2rem 1.35rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  scrollbar-width: thin;
+  scrollbar-color: var(--amarillo-vial) rgba(15, 23, 34, 0.8);
+}
+
+.a11y-modal-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.a11y-modal-body::-webkit-scrollbar-thumb {
+  background: var(--amarillo-vial);
+  border-radius: 6px;
+}
+
+/* Secciones / Paneles de pestaña */
+.a11y-tab-pane {
+  display: none;
+  flex-direction: column;
+  gap: 1.1rem;
+  animation: a11yFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.a11y-tab-pane.active {
+  display: flex;
+}
+
+@keyframes a11yFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Tarjetas de controles individuales */
+.a11y-control-card {
+  background: var(--a11y-card-bg);
+  border: 1px solid var(--asfalto-border);
+  border-radius: 14px;
+  padding: 1rem 1.1rem;
+  transition: background var(--a11y-spring-transition), border-color var(--a11y-spring-transition), transform var(--a11y-spring-transition);
+}
+
+.a11y-control-card:hover {
+  background: var(--a11y-card-hover);
+  border-color: rgba(255, 183, 3, 0.35);
+}
+
+.a11y-control-card.active {
+  border-color: var(--amarillo-vial);
+  box-shadow: 0 4px 20px rgba(255, 183, 3, 0.12);
+}
+
+.a11y-control-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.a11y-control-info {
+  flex: 1;
+}
+
+.a11y-control-label {
+  font-family: var(--f-display);
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--cromo-light);
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-bottom: 2px;
+}
+
+.a11y-control-desc {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+/* Micro-switch táctil tipo Heavy Duty Truck Switch */
+.a11y-switch {
+  position: relative;
+  display: inline-block;
+  width: 48px;
+  height: 26px;
+  flex-shrink: 0;
+}
+
+.a11y-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.a11y-slider {
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  background-color: #1e293b;
+  border: 1.5px solid var(--asfalto-border);
+  border-radius: 34px;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.a11y-slider::before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 2.5px;
+  background-color: #94a3b8;
+  border-radius: 50%;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.a11y-switch input:checked + .a11y-slider {
+  background-color: var(--amarillo-vial);
+  border-color: var(--amarillo-vial);
+  box-shadow: 0 0 14px rgba(255, 183, 3, 0.5);
+}
+
+.a11y-switch input:checked + .a11y-slider::before {
+  transform: translateX(20px);
+  background-color: #080c10;
+}
+
+.a11y-switch input:focus-visible + .a11y-slider {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}
+
+/* Controles de Escala de Fuente (+ / - / Presets) */
+.a11y-font-scale-ctrl {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-top: 0.85rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.a11y-scale-btn {
+  background: var(--asfalto-card-2);
+  border: 1px solid var(--asfalto-border);
+  color: var(--cromo-light);
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-size: 0.9rem;
+  padding: 0.4rem 0.8rem;
+  border-radius: 8px;
+  cursor: pointer;
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.a11y-scale-btn:hover {
+  background: var(--amarillo-vial);
+  color: #080c10;
+  border-color: var(--amarillo-vial);
+  transform: translateY(-2px);
+}
+
+.a11y-scale-btn:active {
+  transform: scale(0.94);
+}
+
+.a11y-font-display {
+  font-family: var(--f-mono);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--amarillo-vial);
+  padding: 0.2rem 0.6rem;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 6px;
+  border: 1px solid rgba(255, 183, 3, 0.3);
+}
+
+/* Barra de Presets Rápidos de Fuente */
+.a11y-preset-pills {
+  display: flex;
+  gap: 0.35rem;
+  margin-top: 0.6rem;
+}
+
+.a11y-pill-btn {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--asfalto-border);
+  color: var(--text-muted);
+  font-family: var(--f-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.3rem 0;
+  border-radius: 6px;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.a11y-pill-btn:hover {
+  color: #ffffff;
+  border-color: var(--cromo-mid);
+}
+
+.a11y-pill-btn.active {
+  background: var(--amarillo-vial);
+  color: #080c10;
+  border-color: var(--amarillo-vial);
+  font-weight: 800;
+}
+
+/* Controles de Lector de Voz (TTS) */
+.a11y-tts-controls {
+  margin-top: 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.a11y-tts-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.a11y-btn-action {
+  flex: 1;
+  background: linear-gradient(135deg, #ffb703 0%, #d97706 100%);
+  color: #080c10;
+  border: 0;
+  font-family: var(--f-display);
+  font-size: 0.88rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  padding: 0.6rem 0.8rem;
+  border-radius: 8px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 14px rgba(255, 183, 3, 0.3);
+}
+
+.a11y-btn-action:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 183, 3, 0.5);
+}
+
+.a11y-btn-secondary {
+  background: var(--asfalto-card-2);
+  color: var(--cromo-light);
+  border: 1px solid var(--asfalto-border);
+  box-shadow: none;
+}
+
+.a11y-btn-secondary:hover {
+  background: #ef233c;
+  color: #ffffff;
+  border-color: #ef233c;
+  box-shadow: 0 4px 14px rgba(239, 35, 60, 0.4);
+}
+
+.a11y-voice-rate-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.a11y-voice-rate-label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* Indicador visual de voz activa (Soundwave) */
+.a11y-soundwave-indicator {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  height: 20px;
+}
+
+.a11y-soundwave-indicator.speaking {
+  display: flex;
+}
+
+.a11y-soundwave-bar {
+  width: 3px;
+  height: 100%;
+  background: var(--amarillo-vial);
+  border-radius: 2px;
+  animation: a11yWave 1s infinite ease-in-out;
+}
+
+.a11y-soundwave-bar:nth-child(2) { animation-delay: 0.15s; }
+.a11y-soundwave-bar:nth-child(3) { animation-delay: 0.3s; }
+.a11y-soundwave-bar:nth-child(4) { animation-delay: 0.45s; }
+
+@keyframes a11yWave {
+  0%, 100% { height: 4px; }
+  50% { height: 18px; }
+}
+
+/* Barra de atajos de teclado & información */
+.a11y-shortcuts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.a11y-shortcut-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.55rem 0.75rem;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--asfalto-border);
+  border-radius: 8px;
+  font-size: 0.82rem;
+  color: var(--text-main);
+}
+
+.a11y-shortcut-item kbd {
+  background: #1e293b;
+  color: var(--amarillo-vial);
+  border: 1px solid rgba(255, 183, 3, 0.4);
+  padding: 0.2rem 0.5rem;
+  border-radius: 5px;
+  font-family: var(--f-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+/* Pie del Hub (Botón de Reset General) */
+.a11y-modal-footer {
+  background: rgba(15, 23, 34, 0.95);
+  padding: 0.9rem 1.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid var(--asfalto-border);
+}
+
+.a11y-reset-all-btn {
+  background: transparent;
+  border: 1px dashed var(--cromo-dark);
+  color: var(--text-muted);
+  font-family: var(--f-display);
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 0.5rem 0.9rem;
+  border-radius: 8px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: all 0.25s ease;
+}
+
+.a11y-reset-all-btn:hover {
+  background: rgba(239, 35, 60, 0.15);
+  border-color: #ef233c;
+  color: #ef233c;
+}
+
+.a11y-status-pill {
+  font-family: var(--f-mono);
+  font-size: 0.75rem;
+  color: var(--verde-torque);
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+/* ---------- 5. Modos Visuales Globales (Clases en Body / HTML) ---------- */
+
+/* A. Modo Alto Contraste (WCAG AAA) */
+body.a11y-high-contrast {
+  --asfalto-bg: #000000 !important;
+  --asfalto-card: #050505 !important;
+  --asfalto-card-2: #101010 !important;
+  --asfalto-border: #ffd700 !important;
+  --cromo-light: #ffffff !important;
+  --text-main: #ffffff !important;
+  --text-muted: #ffea00 !important;
+  --text-dim: #ffffff !important;
+  --amarillo-vial: #ffd700 !important;
+  background-color: #000000 !important;
+  background-image: none !important;
+  color: #ffffff !important;
+}
+
+body.a11y-high-contrast * {
+  border-color: #ffd700 !important;
+  text-shadow: none !important;
+}
+
+body.a11y-high-contrast a,
+body.a11y-high-contrast button {
+  outline-color: #ffd700 !important;
+}
+
+body.a11y-high-contrast .truck-card,
+body.a11y-high-contrast .gauge-card,
+body.a11y-high-contrast .route-card-main,
+body.a11y-high-contrast .stat-card,
+body.a11y-high-contrast .footer-easter-egg-box {
+  background: #050505 !important;
+  border: 2px solid #ffd700 !important;
+}
+
+/* B. Modo Monocromático / Escala de Grises */
+body.a11y-grayscale {
+  filter: grayscale(100%) contrast(105%) !important;
+}
+
+/* C. Filtro de Inversión Inteligente / Daltonismo */
+body.a11y-invert-colors {
+  filter: invert(100%) hue-rotate(180deg) !important;
+  background-color: #ffffff !important;
+}
+
+body.a11y-invert-colors img,
+body.a11y-invert-colors canvas,
+body.a11y-invert-colors video {
+  filter: invert(100%) hue-rotate(180deg) !important;
+}
+
+/* D. Tipografía para Dislexia */
+@font-face {
+  font-family: "OpenDyslexicLocal";
+  src: local("OpenDyslexic"), local("OpenDyslexic3"), local("Comic Sans MS"), local("Lexend");
+}
+
+body.a11y-dyslexia-font,
+body.a11y-dyslexia-font h1,
+body.a11y-dyslexia-font h2,
+body.a11y-dyslexia-font h3,
+body.a11y-dyslexia-font h4,
+body.a11y-dyslexia-font p,
+body.a11y-dyslexia-font span,
+body.a11y-dyslexia-font a,
+body.a11y-dyslexia-font button,
+body.a11y-dyslexia-font input {
+  font-family: "OpenDyslexicLocal", "Comic Sans MS", "Arial Rounded MT Bold", sans-serif !important;
+  letter-spacing: 0.08em !important;
+  word-spacing: 0.12em !important;
+  line-height: 1.8 !important;
+}
+
+/* E. Espaciado de Texto Aumentado */
+body.a11y-spaced-text {
+  letter-spacing: 0.12em !important;
+  word-spacing: 0.16em !important;
+  line-height: 1.9 !important;
+}
+
+body.a11y-spaced-text p,
+body.a11y-spaced-text li,
+body.a11y-spaced-text span {
+  margin-bottom: 0.8rem !important;
+}
+
+/* F. Resaltado Extremo de Enlaces y Botones */
+body.a11y-highlight-interactive a,
+body.a11y-highlight-interactive button,
+body.a11y-highlight-interactive .btn,
+body.a11y-highlight-interactive input {
+  outline: 2.5px solid #ffb703 !important;
+  outline-offset: 3px !important;
+  text-decoration: underline !important;
+  text-decoration-thickness: 2px !important;
+  text-underline-offset: 4px !important;
+  background-color: rgba(255, 183, 3, 0.15) !important;
+}
+
+/* G. Cursor Gigante de Alta Visibilidad */
+body.a11y-big-cursor,
+body.a11y-big-cursor a,
+body.a11y-big-cursor button,
+body.a11y-big-cursor input,
+body.a11y-big-cursor select {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 24 24'%3E%3Cpath fill='%23ffb703' stroke='%23000000' stroke-width='1.5' d='M4.5.79v22.42l6.56-6.57h9.23L4.5.79z'/%3E%3C/svg%3E"), auto !important;
+}
+
+/* H. Detener Animaciones & Movimiento Reducido Forzado */
+body.a11y-stop-animations *,
+body.a11y-stop-animations *::before,
+body.a11y-stop-animations *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+  scroll-behavior: auto !important;
+}
+
+body.a11y-stop-animations #heroCanvas {
+  display: none !important;
+}
+
+/* ---------- 6. Regla de Lectura Visual (Reading Ruler) ---------- */
+.a11y-reading-guide {
+  position: fixed;
+  left: 0;
+  right: 0;
+  height: 52px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  z-index: 99980;
+  box-shadow: 0 0 0 9999px rgba(4, 8, 14, 0.45);
+  border-top: 2.5px solid var(--amarillo-vial);
+  border-bottom: 2.5px solid var(--amarillo-vial);
+  background: rgba(255, 183, 3, 0.06);
+  transition: top 0.06s linear;
+}
+
+.a11y-reading-guide[hidden] {
+  display: none !important;
+}
+
+/* Resaltado de elemento en lectura TTS */
+.a11y-tts-active-element {
+  outline: 4px solid var(--amarillo-vial) !important;
+  outline-offset: 4px !important;
+  background-color: rgba(255, 183, 3, 0.22) !important;
+  border-radius: 8px !important;
+  transition: all 0.2s ease !important;
+  animation: a11yPulseTts 1.5s infinite alternate !important;
+}
+
+@keyframes a11yPulseTts {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 183, 3, 0.7);
+  }
+  100% {
+    box-shadow: 0 0 0 12px rgba(255, 183, 3, 0);
+  }
+}
+
+/* Floating TTS Player Badge cuando el lector está leyendo */
+.a11y-tts-floating-bar {
+  position: fixed;
+  top: 1rem;
+  right: clamp(1rem, 3vw, 2rem);
+  background: rgba(15, 23, 34, 0.95);
+  border: 2px solid var(--amarillo-vial);
+  border-radius: 30px;
+  padding: 0.45rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.8), 0 0 20px rgba(255, 183, 3, 0.3);
+  z-index: 99985;
+  animation: a11ySlideDown 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.a11y-tts-floating-bar[hidden] {
+  display: none !important;
+}
+
+@keyframes a11ySlideDown {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.a11y-tts-floating-text {
+  font-family: var(--f-display);
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--cromo-light);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.a11y-tts-mini-btn {
+  background: var(--asfalto-card-2);
+  border: 1px solid var(--asfalto-border);
+  color: var(--amarillo-vial);
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: all 0.2s ease;
+}
+
+.a11y-tts-mini-btn:hover {
+  background: var(--amarillo-vial);
+  color: #080c10;
+}
+
+/* Toast de Notificación Accesible */
+.a11y-toast {
+  position: fixed;
+  bottom: clamp(5.5rem, 10vw, 6.5rem);
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: rgba(15, 23, 34, 0.95);
+  border: 1.5px solid var(--amarillo-vial);
+  color: #ffffff;
+  font-family: var(--f-display);
+  font-size: 0.92rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  padding: 0.6rem 1.2rem;
+  border-radius: 30px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 20px rgba(255, 183, 3, 0.25);
+  z-index: 99995;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.a11y-toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ---------- 7. Adaptabilidad 100% Responsiva ---------- */
+@media (max-width: 600px) {
+  .a11y-backdrop {
+    padding: 0;
+  }
+
+  .a11y-modal-card {
+    width: 100vw;
+    max-height: 85vh;
+    border-radius: 20px 20px 0 0;
+    border-bottom: 0;
+  }
+
+  .a11y-modal-header {
+    padding: 0.9rem 1.1rem;
+  }
+
+  .a11y-modal-body {
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  .a11y-tab-btn {
+    padding: 0.45rem 0.55rem;
+    font-size: 0.78rem;
+  }
+
+  .a11y-fab {
+    width: 50px;
+    height: 50px;
+    left: 1rem;
+    bottom: 1.2rem;
+  }
+
+  .a11y-fab-icon {
+    font-size: 1.5rem;
+  }
+
+  .a11y-fab-tooltip {
+    display: none;
+  }
+}
+
+@media (max-width: 380px) {
+  .a11y-tabs-nav {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+  }
+
+  .a11y-font-scale-ctrl {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .a11y-scale-btn {
+    width: 100%;
+  }
+}
